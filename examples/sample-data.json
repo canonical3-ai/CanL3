@@ -1,0 +1,7 @@
+[
+  {"id": 1, "name": "Alice", "department": "Engineering", "role": "Developer", "salary": 80000, "active": true, "manager_id": 100},
+  {"id": 2, "name": "Bob", "department": "Engineering", "role": "Developer", "salary": 75000, "active": true, "manager_id": 100},
+  {"id": 3, "name": "Carol", "department": "Marketing", "role": "Manager", "salary": 90000, "active": true, "manager_id": 200},
+  {"id": 4, "name": "David", "department": "Marketing", "role": "Developer", "salary": 70000, "active": false, "manager_id": 300},
+  {"id": 5, "name": "Eve", "department": "Engineering", "role": "Developer", "salary": 82000, "active": true, "manager_id": 100}
+]

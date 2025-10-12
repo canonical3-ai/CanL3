@@ -1,0 +1,260 @@
+﻿/**
+ * String utilities for CanL3 encoding/decoding
+ */
+
+import type { CanL3Delimiter, CanL3TypeHint } from "../types.js";
+
+// Task 013: Import from centralized security limits
+import { MAX_JSON_SIZE, MAX_INDENT } from "./security-limits.js";
+
+/**
+ * Complexity limits for JSON parsing to prevent ReDoS
+ */
+interface ComplexityLimits {
+  maxNesting: number;
+  maxProperties: number;
+  maxArrayLength: number;
+}
+
+const DEFAULT_LIMITS: ComplexityLimits = {
+  maxNesting: 100,
+  maxProperties: 10000,
+  maxArrayLength: 10000
+};
+
+/**
+ * Safely parse JSON with protection against ReDoS attacks and memory exhaustion
+ * BUG-FIX-004: Now accepts valid JSON primitives (null, true, false, numbers, strings)
+ * @param jsonString - JSON string to parse (objects, arrays, or primitives)
+ * @param limits - Optional complexity limits
+ * @returns Parsed JSON value
+ * @throws Error if JSON is invalid or exceeds limits
+ */
+export function safeJsonParse(jsonString: string, limits: Partial<ComplexityLimits> = {}): unknown {
+  const finalLimits = { ...DEFAULT_LIMITS, ...limits };
+
+  // Check input size
+  if (jsonString.length > MAX_JSON_SIZE) {
+    throw new Error(`JSON input too large: ${jsonString.length} bytes (max: ${MAX_JSON_SIZE})`);
+  }
+
+  // Basic structure validation before parsing
+  const trimmed = jsonString.trim();
+  if (!trimmed) {
+    throw new Error('JSON input cannot be empty');
+  }
+
+  // BUG-FIX-004: Accept all valid JSON types, not just objects and arrays
+  // Valid JSON can be: objects {}, arrays [], strings "", numbers, true, false, null
+  const firstChar = trimmed[0];
+  const isObject = firstChar === '{';
+  const isArray = firstChar === '[';
+  const isString = firstChar === '"';
+  const isPrimitive = /^(null|true|false|-?\d)/.test(trimmed);
+
+  if (!(isObject || isArray || isString || isPrimitive)) {
+    throw new Error(`Invalid JSON format: must be valid JSON (object, array, string, number, boolean, or null)`);
+  }
+
+  // BUG-FIX-004: Only validate complexity for objects and arrays, not primitives
+  if (isObject || isArray) {
+    let nesting = 0;
+    let inString = false;
+    let escapeNext = false;
+    let objectCount = 0;
+    let arrayCount = 0;
+
+    // Pre-validate complexity
+    for (let i = 0; i < trimmed.length; i++) {
+      const char = trimmed[i];
+
+      if (escapeNext) {
+        escapeNext = false;
+        continue;
+      }
+
+      if (char === '\\' && inString) {
+        escapeNext = true;
+        continue;
+      }
+
+      if (char === '"' && !escapeNext) {
+        inString = !inString;
+        continue;
+      }
+
+      if (!inString) {
+        switch (char) {
+          case '{':
+            nesting++;
+            objectCount++;
+            if (nesting > finalLimits.maxNesting) {
+              throw new Error(`JSON nesting too deep: ${nesting} (max: ${finalLimits.maxNesting})`);
+            }
+            if (objectCount > finalLimits.maxProperties) {
+              throw new Error(`Too many objects: ${objectCount} (max: ${finalLimits.maxProperties})`);
+            }
+            break;
+          case '[':
+            nesting++;
+            arrayCount++;
+            if (nesting > finalLimits.maxNesting) {
+              throw new Error(`JSON nesting too deep: ${nesting} (max: ${finalLimits.maxNesting})`);
+            }
+            break;
+          case '}':
+          case ']':
+            nesting--;
+            break;
+        }
+      }
+    }
+
+    if (nesting !== 0) {
+      throw new Error('Invalid JSON: unbalanced brackets');
+    }
+  }
+
+  try {
+    return JSON.parse(jsonString);
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      throw new Error(`Invalid JSON: ${error.message}`);
+    }
+    throw error;
+  }
+}
+
+/**
+ * Check if a value needs quoting based on CanL3 quoting rules
+ */
+export function needsQuoting(value: string, delimiter: CanL3Delimiter): boolean {
+  // Empty strings must be quoted to distinguish from missing values
+  if (value === '') return true;
+
+  // Quote boolean-like strings to distinguish from actual booleans
+  if (value === 'true' || value === 'false') return true;
+
+  // Quote null-like strings to distinguish from actual null
+  if (value === 'null' || value === 'undefined') return true;
+
+  // Quote special numeric strings to distinguish from actual Infinity/NaN
+  if (value === 'Infinity' || value === '-Infinity' || value === 'NaN') return true;
+
+  // Quote strings that look like numbers to prevent type confusion
+  if (/^-?\d+$/.test(value)) return true;                          // Integer-like strings
+  if (/^-?\d*\.\d+$/.test(value)) return true;                     // Decimal-like strings
+  if (/^-?\d+\.?\d*e[+-]?\d+$/i.test(value)) return true;          // Scientific notation strings
+
+  return value.includes(delimiter) ||
+         value.includes(':') ||
+         value.includes('{') ||
+         value.includes('}') ||
+         value.includes('#') ||
+         value.includes('"') ||       // Quote characters need quoting
+         value.includes('\n') ||
+         value.includes('\t') ||      // Tab characters need quoting
+         value.includes('\r') ||      // Carriage return needs quoting
+         value.startsWith(' ') ||
+         value.endsWith(' ');
+}
+
+/**
+ * Quote a value if needed according to CanL3 rules
+ */
+export function quoteIfNeeded(value: string, delimiter: CanL3Delimiter): string {
+  if (needsQuoting(value, delimiter)) {
+    // Escape backslashes first, then special characters, then quotes
+    return `"${value.replace(/\\/g, '\\\\').replace(/\r/g, '\\r').replace(/\n/g, '\\n').replace(/\t/g, '\\t').replace(/"/g, '\\"')}"`;
+  }
+  return value;
+}
+
+/**
+ * Unquote a value, handling backslash-escaped quotes and backslashes
+ */
+export function unquote(value: string): string {
+  if (value.startsWith('"') && value.endsWith('"')) {
+    // Remove outer quotes and unescape backslash-escaped characters
+    const inner = value.slice(1, -1);
+    let result = '';
+    let i = 0;
+    while (i < inner.length) {
+      if (inner[i] === '\\' && i + 1 < inner.length) {
+        const nextChar = inner[i + 1];
+        if (nextChar === '\\' || nextChar === '"' || nextChar === 'r' || nextChar === 'n' || nextChar === 't') {
+          // Handle escaped backslashes, quotes, and special characters
+          if (nextChar === 'r') {
+            result += '\r';
+          } else if (nextChar === 'n') {
+            result += '\n';
+          } else if (nextChar === 't') {
+            result += '\t';
+          } else {
+            result += nextChar;
+          }
+          i += 2;
+        } else {
+          result += inner[i];
+          i++;
+        }
+      } else {
+        result += inner[i];
+        i++;
+      }
+    }
+    return result;
+  }
+  return value;
+}
+
+/**
+ * Handle triple-quoted content
+ */
+export function tripleQuoteIfNeeded(value: string, delimiter: CanL3Delimiter): string {
+  if (value.includes('\n') || value.includes('"""')) {
+    // For multi-line content, always use triple quotes
+    // Escape backslashes, special characters, and triple quotes inside
+    const escaped = value
+      .replace(/\\/g, '\\\\')      // Escape backslashes first
+      .replace(/\r/g, '\\r')       // Escape carriage returns to preserve them
+      .replace(/\n/g, '\\n')       // Escape newlines to preserve them
+      .replace(/\t/g, '\\t')       // Escape tabs to preserve them
+      .replace(/"""/g, '\\"""');    // Escape triple quotes
+    return `"""${escaped}"""`;
+  }
+  return quoteIfNeeded(value, delimiter);
+}
+
+/**
+ * Create proper indentation string
+ * BUG-FIX-002: Added validation to prevent string repeat DoS attacks
+ * @param level - Indentation level (must be non-negative safe integer)
+ * @param spaces - Spaces per level (must be 0-100, typically 2 or 4)
+ * @returns Indentation string
+ * @throws RangeError if parameters are invalid or result would be too large
+ */
+export function makeIndent(level: number, spaces: number): string {
+  // Validate level
+  if (!Number.isSafeInteger(level) || level < 0) {
+    throw new RangeError(`Invalid indent level: ${level} (must be non-negative safe integer)`);
+  }
+
+  // Validate spaces
+  if (!Number.isSafeInteger(spaces) || spaces < 0 || spaces > 100) {
+    throw new RangeError(`Invalid spaces value: ${spaces} (must be 0-100)`);
+  }
+
+  // Calculate total spaces and check limit
+  const totalSpaces = level * spaces;
+
+  if (totalSpaces > MAX_INDENT) {
+    throw new RangeError(
+      `Total indent too large: ${totalSpaces} spaces (max: ${MAX_INDENT}). ` +
+      `This may indicate excessive nesting depth or a DoS attack.`
+    );
+  }
+
+  return " ".repeat(totalSpaces);
+}
+

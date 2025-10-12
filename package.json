@@ -1,0 +1,127 @@
+﻿{
+  "name": "CanL3",
+  "version": "2.5.1",
+  "description": "Token-Optimized Notation Language - A text-first, LLM-friendly serialization format with enterprise-level security, high-performance caching, comprehensive validation, streaming, and browser support",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.d.ts",
+    "dist/**/*.js.map",
+    "!dist/**/*.cmd",
+    "!dist/**/*.ps1",
+    "docs/",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "browser": "./dist/browser/CanL3.esm.js",
+      "import": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/browser-core.d.ts",
+      "import": "./dist/browser/CanL3.esm.js"
+    },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "import": "./dist/schema/index.js"
+    },
+    "./parser": {
+      "types": "./dist/parser/index.d.ts",
+      "import": "./dist/parser/index.js"
+    },
+    "./stream": {
+      "types": "./dist/stream/index.d.ts",
+      "import": "./dist/stream/index.js"
+    },
+    "./query": {
+      "types": "./dist/query/index.d.ts",
+      "import": "./dist/query/index.js"
+    },
+    "./optimization": {
+      "types": "./dist/optimization/index.d.ts",
+      "import": "./dist/optimization/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "CanL3": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc && node fix-imports.js",
+    "build:browser": "vite build && node scripts/copy-browser-build.js",
+    "build:all": "npm run build && npm run build:browser",
+    "test": "npm run build && node --test test/edge-cases.test.ts test/encode_decode_roundtrip.test.ts test/integration.test.ts test/navigation.test.ts test/parser.test.ts test/CanL3-document.test.ts test/comprehensive.test.ts test/schema.test.ts test/stream.test.ts test/modification-setter.test.ts test/format.test.ts test/modification-complete.test.ts test/query-evaluator.test.ts test/query-filter.test.ts test/query-path-parser.test.ts test/schema-constraints.test.ts test/integration/query-integration.test.ts",
+    "test:all": "npm run build && node --test test/*.test.ts",
+    "test:stable": "npm run test",
+    "test:features": "npm run build && node examples/feature-coverage-test.ts",
+    "test:examples": "npm run build && npm run examples:core && npm run examples:navigation && npm run examples:schema && npm run examples:query && npm run examples:modification && npm run examples:indexing && npm run examples:streaming",
+    "examples:core": "node examples/core/01-serialization-basics.ts",
+    "examples:navigation": "node examples/navigation/01-tree-traversal.ts",
+    "examples:schema": "node examples/schema/01-validation-demo.ts",
+    "examples:query": "node examples/query/01-basic-queries.ts && node examples/query/02-filter-expressions.ts",
+    "examples:modification": "node examples/modification/01-basic-crud.ts && node examples/modification/02-transactions.ts",
+    "examples:indexing": "node examples/indexing/01-basic-indexing.ts",
+    "examples:streaming": "node examples/streaming/01-large-files.ts",
+    "examples:all": "npm run test:examples",
+    "dev": "tsc --watch",
+    "bench": "npm run build && node bench/bench-bytes.js",
+    "bench-tokens": "npm run build && node bench/bench-tokens.js",
+    "bench-comprehensive": "npm run build && node dist/bench/comprehensive-bench.js",
+    "bench-query": "npm run build && node dist/bench/query-performance.js",
+    "link": "npm run build && npm link",
+    "test:coverage": "npm run build && c8 node --test test/*.test.ts",
+    "test:coverage:report": "npm run test:coverage -- --reporter=html --reporter=text",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "serialization",
+    "format",
+    "llm",
+    "compact",
+    "typescript",
+    "schema",
+    "validation",
+    "token-optimization",
+    "data-format",
+    "parser",
+    "query",
+    "jsonpath",
+    "indexing",
+    "streaming",
+    "repl",
+    "data-platform",
+    "crud",
+    "diff",
+    "ai",
+    "gpt",
+    "security",
+    "performance",
+    "caching",
+    "regex",
+    "string-builder",
+    "enterprise",
+    "production-ready",
+    "thread-safe",
+    "memory-efficient"
+  ],
+  "author": "Ersin KOÃ‡",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "c8": "^10.1.3",
+    "fast-check": "^4.3.0",
+    "rimraf": "^6.0.1",
+    "stream-browserify": "^3.0.0",
+    "terser": "^5.44.0",
+    "typescript": "^5.0.0",
+    "vite": "^7.1.12"
+  }
+}
+

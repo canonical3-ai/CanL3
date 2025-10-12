@@ -1,0 +1,73 @@
+{
+  "status": "success",
+  "timestamp": 1699456789123,
+  "requestId": "req_abc123xyz789def456",
+  "apiVersion": "v2.1",
+  "data": {
+    "total": 1247,
+    "page": 1,
+    "pageSize": 25,
+    "hasMore": true,
+    "filters": {
+      "category": "technology",
+      "dateFrom": "2025-10-01",
+      "dateTo": "2025-11-04"
+    },
+    "results": [
+      {
+        "id": "article_12345",
+        "title": "Introduction to Modern Serialization Formats",
+        "slug": "modern-serialization-formats",
+        "author": {
+          "id": "author_789",
+          "name": "Alice Smith",
+          "username": "alice_tech",
+          "verified": true,
+          "followers": 15234
+        },
+        "content": "In this comprehensive guide, we'll explore modern approaches to data serialization...",
+        "excerpt": "Explore modern serialization formats and their benefits for LLM applications",
+        "tags": ["tutorial", "serialization", "llm", "data-formats"],
+        "published": "2025-10-15T10:00:00Z",
+        "updated": "2025-10-20T14:30:00Z",
+        "views": 15234,
+        "likes": 892,
+        "comments": 45,
+        "bookmarks": 234,
+        "shares": 67,
+        "readingTime": 8,
+        "featured": true
+      },
+      {
+        "id": "article_12346",
+        "title": "Advanced Query Patterns for Data Access",
+        "slug": "advanced-query-patterns",
+        "author": {
+          "id": "author_456",
+          "name": "Bob Johnson",
+          "username": "bob_dev",
+          "verified": true,
+          "followers": 8934
+        },
+        "content": "Learn how to leverage powerful query APIs for efficient data access...",
+        "excerpt": "Master advanced querying techniques with JSONPath-like syntax",
+        "tags": ["advanced", "query", "tutorial", "api"],
+        "published": "2025-10-20T14:30:00Z",
+        "updated": "2025-10-25T09:15:00Z",
+        "views": 8934,
+        "likes": 456,
+        "comments": 23,
+        "bookmarks": 123,
+        "shares": 34,
+        "readingTime": 12,
+        "featured": false
+      }
+    ]
+  },
+  "meta": {
+    "processingTime": 45,
+    "cacheHit": true,
+    "dataCenter": "us-east-1",
+    "version": "1.0.5"
+  }
+}

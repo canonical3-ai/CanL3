@@ -1,0 +1,146 @@
+{
+  "productCatalog": {
+    "version": "3.2",
+    "lastUpdated": "2025-11-04T00:00:00Z",
+    "totalProducts": 3,
+    "categories": [
+      {
+        "id": "cat_electronics",
+        "name": "Electronics",
+        "slug": "electronics",
+        "description": "Electronic devices, computers, and gadgets",
+        "parentCategory": null,
+        "displayOrder": 1,
+        "active": true,
+        "seoMetadata": {
+          "title": "Electronics - Best Deals on Tech",
+          "description": "Shop the latest electronics",
+          "keywords": ["electronics", "computers", "gadgets"]
+        },
+        "products": [
+          {
+            "productId": "prod_laptop_premium_001",
+            "sku": "LAPTOP-PREM-15-BLK",
+            "name": "Premium Laptop 15 inch Professional Edition",
+            "shortDescription": "High-performance laptop for professionals",
+            "longDescription": "This premium laptop combines power and portability with cutting-edge specifications designed for demanding professional workflows...",
+            "brand": "TechBrand International",
+            "manufacturer": "TechManufacturing Co.",
+            "price": {
+              "amount": 1499.99,
+              "currency": "USD",
+              "compareAtPrice": 1799.99,
+              "onSale": true,
+              "discountPercentage": 17,
+              "taxIncluded": false
+            },
+            "inventory": {
+              "inStock": true,
+              "quantity": 25,
+              "warehouse": "US-WEST-1",
+              "reservedQuantity": 5,
+              "availableQuantity": 20,
+              "lowStockThreshold": 10,
+              "reorderPoint": 15
+            },
+            "specifications": {
+              "processor": {
+                "brand": "Intel",
+                "model": "Core i7 11th Generation",
+                "cores": 8,
+                "threads": 16,
+                "baseSpeed": "2.8 GHz",
+                "boostSpeed": "4.7 GHz"
+              },
+              "memory": {
+                "size": "16GB",
+                "type": "DDR4",
+                "speed": "3200 MHz",
+                "slots": 2,
+                "maxSupported": "32GB"
+              },
+              "storage": {
+                "type": "SSD",
+                "technology": "NVMe PCIe 4.0",
+                "capacity": "512GB",
+                "expandable": true,
+                "additionalSlots": 1
+              },
+              "display": {
+                "size": "15.6 inches",
+                "resolution": "1920x1080",
+                "panelType": "IPS",
+                "refreshRate": "60 Hz",
+                "brightness": "300 nits",
+                "touchscreen": false
+              },
+              "graphics": {
+                "type": "Integrated",
+                "model": "Intel Iris Xe Graphics",
+                "dedicatedMemory": "Shared"
+              },
+              "connectivity": {
+                "wifi": "Wi-Fi 6 (802.11ax)",
+                "bluetooth": "5.2",
+                "ethernet": "Gigabit",
+                "ports": ["2x USB-C Thunderbolt 4", "2x USB-A 3.2", "HDMI 2.0", "Audio Jack", "SD Card Reader"]
+              },
+              "battery": {
+                "capacity": "75 Wh",
+                "estimatedLife": "Up to 12 hours",
+                "chargingTime": "90 minutes to 80%",
+                "fastCharging": true
+              },
+              "physical": {
+                "weight": "1.8 kg",
+                "dimensions": {
+                  "width": "35.8 cm",
+                  "depth": "24.5 cm",
+                  "height": "1.8 cm"
+                },
+                "material": "Aluminum unibody",
+                "color": "Space Gray"
+              },
+              "operating System": {
+                "name": "Windows 11 Pro",
+                "version": "22H2",
+                "license": "OEM"
+              }
+            },
+            "media": {
+              "images": [
+                { "url": "laptop_front.jpg", "alt": "Front view", "order": 1 },
+                { "url": "laptop_side.jpg", "alt": "Side view", "order": 2 },
+                { "url": "laptop_open.jpg", "alt": "Open view", "order": 3 },
+                { "url": "laptop_ports.jpg", "alt": "Ports detail", "order": 4 }
+              ],
+              "videos": [
+                { "url": "laptop_review.mp4", "type": "review", "duration": 180 }
+              ]
+            },
+            "reviews": {
+              "averageRating": 4.8,
+              "totalReviews": 342,
+              "distribution": {
+                "5star": 280,
+                "4star": 45,
+                "3star": 12,
+                "2star": 3,
+                "1star": 2
+              },
+              "verifiedPurchases": 298
+            },
+            "tags": ["bestseller", "premium", "business", "portable", "powerful"],
+            "relatedProducts": ["prod_laptop_bag_001", "prod_mouse_wireless_001", "prod_laptop_stand_001"],
+            "warrantyInfo": {
+              "duration": "2 years",
+              "type": "manufacturer",
+              "extendedAvailable": true,
+              "extendedPrice": 199.99
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

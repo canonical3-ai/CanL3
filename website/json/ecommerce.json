@@ -1,0 +1,75 @@
+{
+  "store": {
+    "name": "TechMart Premium Store",
+    "currency": "USD",
+    "categories": ["Electronics", "Accessories", "Computers", "Gaming"]
+  },
+  "products": [
+    {
+      "sku": "LAPTOP-PRO-15-2025",
+      "name": "Professional Laptop 15 inch Ultra",
+      "description": "High-performance laptop with 16GB RAM, 512GB SSD, Intel i7 processor",
+      "price": 1299.99,
+      "comparePrice": 1599.99,
+      "stock": 15,
+      "category": "Computers",
+      "rating": 4.8,
+      "reviews": 234,
+      "tags": ["bestseller", "premium", "business", "portable"],
+      "specs": {
+        "processor": "Intel Core i7 11th Gen",
+        "ram": "16GB DDR4 3200MHz",
+        "storage": "512GB NVMe PCIe 4.0 SSD",
+        "screen": "15.6 inch FHD IPS",
+        "graphics": "Intel Iris Xe",
+        "weight": "1.8 kg",
+        "battery": "Up to 12 hours",
+        "ports": "2x USB-C, 2x USB-A, HDMI, Audio"
+      },
+      "inStock": true,
+      "featured": true
+    },
+    {
+      "sku": "MOUSE-WIRELESS-PRO",
+      "name": "Wireless Ergonomic Mouse Pro",
+      "description": "Premium wireless mouse with 6 programmable buttons and precision tracking",
+      "price": 29.99,
+      "comparePrice": 39.99,
+      "stock": 150,
+      "category": "Accessories",
+      "rating": 4.5,
+      "reviews": 567,
+      "tags": ["ergonomic", "wireless", "bestseller", "gaming"],
+      "specs": {
+        "dpi": "3200 adjustable",
+        "connectivity": "USB Receiver + Bluetooth 5.0",
+        "battery": "Rechargeable Li-ion",
+        "buttons": 6,
+        "color": "Black"
+      },
+      "inStock": true,
+      "featured": false
+    },
+    {
+      "sku": "KB-MECHANICAL-RGB-FULL",
+      "name": "Mechanical RGB Keyboard Full Size",
+      "description": "Gaming mechanical keyboard with RGB per-key backlight and Cherry MX switches",
+      "price": 89.99,
+      "comparePrice": 119.99,
+      "stock": 45,
+      "category": "Accessories",
+      "rating": 4.7,
+      "reviews": 892,
+      "tags": ["gaming", "rgb", "mechanical", "premium"],
+      "specs": {
+        "switchType": "Cherry MX Blue",
+        "connectivity": "USB-C detachable",
+        "backlight": "RGB per-key customizable",
+        "layout": "Full size 104 keys",
+        "features": "Anti-ghosting, N-key rollover"
+      },
+      "inStock": true,
+      "featured": true
+    }
+  ]
+}

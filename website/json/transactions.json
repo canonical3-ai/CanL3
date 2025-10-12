@@ -1,0 +1,37 @@
+{
+  "accountId": "ACC-987654",
+  "accountHolder": "John Smith",
+  "period": "2025-10",
+  "transactions": [
+    {"id": "TXN-001", "date": "2025-10-01", "type": "debit", "category": "groceries", "merchant": "Whole Foods Market", "amount": 127.45, "balance": 4872.55, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-002", "date": "2025-10-01", "type": "credit", "category": "salary", "merchant": "Employer Direct Deposit", "amount": 5000.00, "balance": 9872.55, "status": "completed", "location": "Online"},
+    {"id": "TXN-003", "date": "2025-10-02", "type": "debit", "category": "utilities", "merchant": "Pacific Gas & Electric", "amount": 156.78, "balance": 9715.77, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-004", "date": "2025-10-02", "type": "debit", "category": "transportation", "merchant": "SFMTA Monthly Pass", "amount": 98.00, "balance": 9617.77, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-005", "date": "2025-10-03", "type": "debit", "category": "dining", "merchant": "Blue Bottle Coffee", "amount": 8.50, "balance": 9609.27, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-006", "date": "2025-10-03", "type": "debit", "category": "shopping", "merchant": "Amazon.com", "amount": 89.99, "balance": 9519.28, "status": "completed", "location": "Online"},
+    {"id": "TXN-007", "date": "2025-10-04", "type": "debit", "category": "groceries", "merchant": "Trader Joe's", "amount": 64.23, "balance": 9455.05, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-008", "date": "2025-10-05", "type": "debit", "category": "entertainment", "merchant": "Netflix Subscription", "amount": 15.99, "balance": 9439.06, "status": "completed", "location": "Online"},
+    {"id": "TXN-009", "date": "2025-10-05", "type": "debit", "category": "entertainment", "merchant": "Spotify Premium", "amount": 10.99, "balance": 9428.07, "status": "completed", "location": "Online"},
+    {"id": "TXN-010", "date": "2025-10-06", "type": "debit", "category": "dining", "merchant": "Chipotle Mexican Grill", "amount": 14.75, "balance": 9413.32, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-011", "date": "2025-10-07", "type": "debit", "category": "shopping", "merchant": "Target", "amount": 142.56, "balance": 9270.76, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-012", "date": "2025-10-08", "type": "debit", "category": "health", "merchant": "CVS Pharmacy", "amount": 45.30, "balance": 9225.46, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-013", "date": "2025-10-09", "type": "debit", "category": "dining", "merchant": "Starbucks", "amount": 12.45, "balance": 9213.01, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-014", "date": "2025-10-10", "type": "debit", "category": "transportation", "merchant": "Uber", "amount": 28.50, "balance": 9184.51, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-015", "date": "2025-10-11", "type": "debit", "category": "groceries", "merchant": "Safeway", "amount": 98.67, "balance": 9085.84, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-016", "date": "2025-10-12", "type": "debit", "category": "shopping", "merchant": "Apple Store", "amount": 1299.00, "balance": 7786.84, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-017", "date": "2025-10-13", "type": "debit", "category": "dining", "merchant": "The French Laundry", "amount": 385.00, "balance": 7401.84, "status": "completed", "location": "Yountville, CA"},
+    {"id": "TXN-018", "date": "2025-10-14", "type": "debit", "category": "utilities", "merchant": "Comcast Internet", "amount": 89.99, "balance": 7311.85, "status": "completed", "location": "San Francisco, CA"},
+    {"id": "TXN-019", "date": "2025-10-15", "type": "credit", "category": "refund", "merchant": "Amazon.com Refund", "amount": 29.99, "balance": 7341.84, "status": "completed", "location": "Online"},
+    {"id": "TXN-020", "date": "2025-10-16", "type": "debit", "category": "groceries", "merchant": "Whole Foods Market", "amount": 134.56, "balance": 7207.28, "status": "completed", "location": "San Francisco, CA"}
+  ],
+  "summary": {
+    "totalDebits": 2752.71,
+    "totalCredits": 5029.99,
+    "netChange": 2277.28,
+    "openingBalance": 5000.00,
+    "closingBalance": 7207.28,
+    "avgTransactionSize": 136.36,
+    "largestTransaction": 1299.00,
+    "transactionCount": 20
+  }
+}

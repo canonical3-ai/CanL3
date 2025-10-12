@@ -1,0 +1,73 @@
+{
+  "analytics": {
+    "reportId": "analytics_2025_10",
+    "period": "October 2025",
+    "generated": "2025-11-04T00:00:00Z",
+    "summary": {
+      "totalUsers": 45678,
+      "activeUsers": 23456,
+      "newUsers": 1234,
+      "returningUsers": 22222,
+      "churnRate": 3.2,
+      "growthRate": 5.4
+    },
+    "engagement": {
+      "pageViews": 567890,
+      "uniquePageViews": 234567,
+      "sessions": 123456,
+      "avgSessionDuration": 180,
+      "bounceRate": 42.5,
+      "pagesPerSession": 3.8
+    },
+    "conversions": {
+      "totalConversions": 3456,
+      "conversionRate": 2.8,
+      "goalCompletions": {
+        "signup": 2345,
+        "purchase": 890,
+        "subscription": 221
+      },
+      "revenue": {
+        "total": 234567.89,
+        "subscriptions": 189234.50,
+        "oneTimePurchases": 45333.39
+      }
+    },
+    "topPages": [
+      {
+        "path": "/dashboard",
+        "title": "Dashboard",
+        "views": 45678,
+        "uniqueViews": 23456,
+        "avgTimeOnPage": 120,
+        "bounceRate": 35.2
+      },
+      {
+        "path": "/products",
+        "title": "Products",
+        "views": 34567,
+        "uniqueViews": 18934,
+        "avgTimeOnPage": 90,
+        "bounceRate": 45.8
+      },
+      {
+        "path": "/pricing",
+        "title": "Pricing",
+        "views": 23456,
+        "uniqueViews": 15678,
+        "avgTimeOnPage": 60,
+        "bounceRate": 38.5
+      }
+    ],
+    "demographics": {
+      "byCountry": [
+        { "country": "United States", "users": 15678, "percentage": 34.3, "revenue": 123456.78 },
+        { "country": "United Kingdom", "users": 8934, "percentage": 19.6, "revenue": 67890.12 },
+        { "country": "Germany", "users": 6789, "percentage": 14.9, "revenue": 45678.90 },
+        { "country": "France", "users": 5432, "percentage": 11.9, "revenue": 34567.89 },
+        { "country": "Canada", "users": 4321, "percentage": 9.5, "revenue": 28901.23 },
+        { "country": "Other", "users": 4524, "percentage": 9.8, "revenue": 34072.97 }
+      ]
+    }
+  }
+}

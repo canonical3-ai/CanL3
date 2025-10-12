@@ -1,0 +1,30 @@
+﻿@CanL3 v1
+
+# API batch response - Multiple user queries
+meta{requestId,timestamp,processingTime:f64,version}:
+  requestId: req_abc123xyz789
+  timestamp: 2025-11-03T15:45:30.123Z
+  processingTime: 45.67
+  version: v2.1.0
+
+results[3]{userId:u32,status,data:obj,error}:
+  1001,success,"""{"name":"Alice","age":28,"city":"NYC"}""",null
+  1002,success,"""{"name":"Bob","age":32,"city":"LA"}""",null
+  1003,error,null,"User not found"
+
+pagination{page:u32,pageSize:u32,totalPages:u32,totalResults:u32}:
+  page: 1
+  pageSize: 3
+  totalPages: 334
+  totalResults: 1001
+
+rateLimit{remaining:u32,limit:u32,resetAt}:
+  remaining: 97
+  limit: 100
+  resetAt: 2025-11-03T16:00:00Z
+
+cacheInfo{hit:bool,ttl:u32,source}:
+  hit: true
+  ttl: 3600
+  source: redis-cluster-1
+

@@ -1,0 +1,33 @@
+﻿@CanL3 v1
+
+# Web analytics dashboard data
+metrics{period,pageViews:u32,uniqueVisitors:u32,bounceRate:f64,avgSessionTime:f64}:
+  period: 2025-11-01 to 2025-11-03
+  pageViews: 45230
+  uniqueVisitors: 12341
+  bounceRate: 0.34
+  avgSessionTime: 245.5
+
+topPages[5]{url,views:u32,avgTime:f64}:
+  /,15234,180.5
+  /products,8923,245.2
+  /about,4521,90.3
+  /contact,3201,60.8
+  /blog,2145,320.1
+
+referrers[4]{source,visits:u32,conversions:u32}:
+  google,8234,423
+  direct,3201,234
+  twitter,892,67
+  facebook,501,34
+
+userSegments[3]{segment,count:u32,revenue:f64}:
+  new-users,3401,12345.67
+  returning-users,6789,45678.90
+  power-users,2151,98765.43
+
+summary{totalRevenue:f64,conversionRate:f64,growth:f64}:
+  totalRevenue: 156790.00
+  conversionRate: 0.062
+  growth: 0.15
+

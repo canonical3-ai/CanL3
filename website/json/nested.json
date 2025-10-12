@@ -1,0 +1,62 @@
+{
+  "organization": {
+    "name": "TechCorp International",
+    "founded": 2015,
+    "headquarters": {
+      "country": "USA",
+      "address": {
+        "street": "123 Tech Boulevard",
+        "suite": "Suite 500",
+        "city": "San Francisco",
+        "state": "California",
+        "zipCode": "94105",
+        "coordinates": {
+          "latitude": 37.7749,
+          "longitude": -122.4194,
+          "accuracy": "high"
+        }
+      },
+      "contact": {
+        "phone": "+1-415-555-0100",
+        "fax": "+1-415-555-0101",
+        "email": "info@techcorp.com",
+        "support": {
+          "email": "support@techcorp.com",
+          "phone": "+1-415-555-0200",
+          "hours": "24/7"
+        }
+      }
+    },
+    "departments": [
+      {
+        "id": "dept_engineering",
+        "name": "Engineering",
+        "headCount": 150,
+        "budget": 15000000,
+        "manager": {
+          "employeeId": "E001",
+          "name": "Alice Johnson",
+          "title": "VP of Engineering",
+          "contact": {
+            "email": "alice.j@techcorp.com",
+            "phone": "+1-415-555-1001"
+          }
+        },
+        "teams": [
+          {
+            "name": "Backend Infrastructure",
+            "size": 25,
+            "technologies": ["Node.js", "Python", "Go", "PostgreSQL", "Redis"],
+            "projects": ["API Gateway", "Microservices", "Data Pipeline"]
+          },
+          {
+            "name": "Frontend Platform",
+            "size": 20,
+            "technologies": ["React", "TypeScript", "Next.js", "Tailwind CSS"],
+            "projects": ["Web App", "Mobile Web", "Component Library"]
+          }
+        ]
+      }
+    ]
+  }
+}

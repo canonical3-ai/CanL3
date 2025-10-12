@@ -1,0 +1,126 @@
+﻿{
+  "name": "CanL3-vscode",
+  "displayName": "CanL3 Language Support",
+  "description": "Complete language support for CanL3 (Token-Optimized Notation Language) with syntax highlighting, IntelliSense, document explorer, and validation",
+  "version": "1.0.0",
+  "publisher": "CanL3-dev",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters",
+    "Linters",
+    "Snippets",
+    "Other"
+  ],
+  "keywords": [
+    "CanL3",
+    "data",
+    "serialization",
+    "llm",
+    "token optimization",
+    "json alternative",
+    "data format",
+    "syntax highlighting",
+    "intellisense",
+    "validation"
+  ],
+  "icon": "resources/CanL3-icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onLanguage:CanL3"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "CanL3",
+        "aliases": [
+          "CanL3",
+          "CanL3"
+        ],
+        "extensions": [
+          ".CanL3"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "CanL3",
+        "scopeName": "source.CanL3",
+        "path": "./syntaxes/CanL3.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "CanL3.validateDocument",
+        "title": "CanL3: Validate Document"
+      },
+      {
+        "command": "CanL3.formatDocument",
+        "title": "CanL3: Format Document"
+      },
+      {
+        "command": "CanL3.showDocumentTree",
+        "title": "CanL3: Show Document Tree"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "CanL3-explorer",
+          "title": "CanL3 Explorer",
+          "icon": "resources/CanL3-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "CanL3-explorer": [
+        {
+          "id": "CanL3DocumentTree",
+          "name": "Document Tree"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "@vscode/vsce package"
+  },
+  "dependencies": {
+    "CanL3": "file:.."
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "@vscode/vsce": "^3.6.2",
+    "typescript": "^5.0.0",
+    "vsce": "^2.15.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CanL3-dev/CanL3.git",
+    "directory": "vscode-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/CanL3-dev/CanL3/issues"
+  },
+  "homepage": "https://CanL3.dev",
+  "author": {
+    "name": "Ersin Koc",
+    "email": "ersin@CanL3.dev",
+    "url": "https://github.com/ersinkoc"
+  },
+  "license": "MIT",
+  "markdown": "github",
+  "qna": "https://github.com/CanL3-dev/CanL3/discussions"
+}
+
+

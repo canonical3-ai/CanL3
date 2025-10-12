@@ -1,0 +1,2269 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Documentation - CanL3</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      code,
+      pre {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* Copy button for code blocks */
+      .code-wrapper {
+        position: relative;
+      }
+      .copy-code-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 4px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        color: white;
+        font-size: 11px;
+        cursor: pointer;
+        opacity: 0;
+        transition: all 0.2s;
+      }
+      .code-wrapper:hover .copy-code-btn {
+        opacity: 1;
+      }
+      .copy-code-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      .copy-code-btn.copied {
+        background: #10b981;
+        border-color: #10b981;
+      }
+
+      /* Smooth transitions */
+      html {
+        scroll-behavior: smooth;
+      }
+      .sidebar a {
+        transition: all 0.2s;
+      }
+
+      /* Hover glow effect */
+      .border-slate-200:hover {
+        border-color: rgb(226 232 240);
+        box-shadow: 0 0 0 3px rgb(226 232 240 / 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-white">
+    <!-- Navigation -->
+    <nav
+      class="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm"
+    >
+      <div class="max-w-6xl mx-auto px-4 py-3" x-data="{ mobileOpen: false }">
+        <div class="flex items-center justify-between">
+          <!-- Logo -->
+          <a href="/" class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center"
+            >
+              <span class="text-2xl font-bold text-white">T</span>
+            </div>
+            <span class="text-2xl font-bold text-slate-900">CanL3</span>
+          </a>
+
+          <!-- Desktop Nav -->
+          <div class="hidden md:flex items-center gap-8">
+            <a href="format-overview.html" class="text-slate-600 hover:text-slate-900 font-medium transition"
+              >Format</a
+            >
+            <a href="docs.html" class="text-slate-900 font-medium transition"
+              >Docs</a
+            >
+            <a
+              href="examples.html"
+              class="text-slate-600 hover:text-slate-900 font-medium transition"
+              >Playground</a
+            >
+            <a
+              href="cli.html"
+              class="text-blue-600 hover:text-blue-800 font-medium transition font-semibold"
+              >CLI</a
+            >
+            <a
+              href="https://github.com/CanL3-dev/CanL3"
+              target="_blank"
+              class="text-slate-600 hover:text-slate-900 font-medium transition"
+              >GitHub</a
+            >
+            <a
+              href="https://www.npmjs.com/package/CanL3"
+              target="_blank"
+              class="bg-slate-900 text-white px-5 py-2 rounded-lg font-semibold hover:bg-slate-800 transition"
+            >
+              Install
+            </a>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button @click="mobileOpen = !mobileOpen" class="md:hidden">
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileOpen" class="md:hidden mt-4 space-y-1" x-transition>
+          <a
+            href="format-overview.html"
+            class="block py-2 text-slate-600 hover:text-slate-900"
+            >Format</a
+          >
+          <a
+            href="docs.html"
+            class="block py-2 text-slate-600 hover:text-slate-900"
+            >Docs</a
+          >
+          <a
+            href="examples.html"
+            class="block py-2 text-slate-600 hover:text-slate-900"
+            >Playground</a
+          >
+          <a
+            href="cli.html"
+            class="block py-2 text-blue-600 hover:text-blue-800 font-semibold"
+            >CLI</a
+          >
+          <a
+            href="https://github.com/CanL3-dev/CanL3"
+            class="block py-2 text-slate-600 hover:text-slate-900"
+            >GitHub</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-4 py-12" x-data="{ tab: 'start' }">
+      <div class="grid md:grid-cols-4 gap-8">
+        <!-- Sidebar -->
+        <div class="md:col-span-1">
+          <div class="sticky top-24 space-y-1">
+            <a
+              @click="tab = 'start'"
+              :class="tab === 'start' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              Getting Started
+            </a>
+            <a
+              @click="tab = 'api'"
+              :class="tab === 'api' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              API Reference
+            </a>
+            <a
+              @click="tab = 'query'"
+              :class="tab === 'query' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              Query Syntax
+            </a>
+            <a
+              @click="tab = 'cli'"
+              :class="tab === 'cli' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              CLI Tools
+            </a>
+            <a
+              @click="tab = 'llm'"
+              :class="tab === 'llm' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              ðŸ¤– LLM Prompt
+            </a>
+            <a
+              @click="tab = 'schema'"
+              :class="tab === 'schema' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              âœ… Schema
+            </a>
+            <a
+              @click="tab = 'streaming'"
+              :class="tab === 'streaming' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              ðŸŒŠ Streaming
+            </a>
+            <a
+              @click="tab = 'optimization'"
+              :class="tab === 'optimization' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              âš¡ v2.0 Optimization
+            </a>
+            <a
+              @click="tab = 'impl'"
+              :class="tab === 'impl' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+              id="implementation"
+            >
+              Implementation
+            </a>
+
+            <div class="pt-4 mt-4 border-t border-slate-200">
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider px-4 py-2">
+                v2.5.1 Critical Bug Fixes
+              </div>
+            </div>
+            <a
+              @click="tab = 'aggregation'"
+              :class="tab === 'aggregation' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              ðŸ“Š Aggregation
+            </a>
+            <a
+              @click="tab = 'fuzzy'"
+              :class="tab === 'fuzzy' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              ðŸ” Fuzzy Matching
+            </a>
+            <a
+              @click="tab = 'temporal'"
+              :class="tab === 'temporal' ? 'bg-slate-100 text-slate-900 font-semibold' : 'text-slate-600 hover:bg-slate-50'"
+              class="block px-4 py-2 rounded-lg cursor-pointer transition"
+            >
+              â° Temporal Queries
+            </a>
+
+            <div class="pt-4 mt-4 border-t border-slate-200">
+              <a
+                href="https://github.com/CanL3-dev/CanL3/tree/main/docs"
+                target="_blank"
+                class="block px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition"
+              >
+                Full Docs on GitHub â†’
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="md:col-span-3">
+          <!-- Getting Started -->
+          <div x-show="tab === 'start'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                Getting Started
+              </h1>
+              <p class="text-lg text-slate-600">
+                Install and start using CanL3 in 30 seconds
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Installation
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-4">
+                  <code class="text-emerald-400">npm install CanL3</code>
+                </div>
+                <button
+                  class="copy-code-btn"
+                  onclick="copyCode(this, 'npm install CanL3')"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Quick Example
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre
+                    class="text-slate-300 text-sm leading-relaxed"
+                  ><code><span class="text-purple-400">import</span> { CanL3Document } <span class="text-purple-400">from</span> <span class="text-emerald-400">'CanL3'</span>;
+
+<span class="text-slate-500">// Create from JSON</span>
+<span class="text-purple-400">const</span> doc = CanL3Document.fromJSON({
+  users: [{ name: <span class="text-emerald-400">'Alice'</span>, age: <span class="text-orange-400">30</span> }]
+});
+
+<span class="text-slate-500">// Query</span>
+<span class="text-purple-400">const</span> result = doc.query(<span class="text-emerald-400">'users[*].name'</span>);
+
+<span class="text-slate-500">// Modify</span>
+doc.set(<span class="text-emerald-400">'users[0].age'</span>, <span class="text-orange-400">31</span>);
+
+<span class="text-slate-500">// Save</span>
+<span class="text-purple-400">await</span> doc.save(<span class="text-emerald-400">'data.CanL3'</span>);</code></pre>
+                </div>
+                <!-- Copy button temporarily disabled -->
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Encoding Options
+              </h3>
+              <div class="space-y-4">
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    Compact Mode (Default)
+                  </h4>
+                  <div class="code-wrapper">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                      <code class="text-emerald-400 text-sm"
+                        >encodeCanL3(data)</code
+                      >
+                    </div>
+                    <button
+                      class="copy-code-btn"
+                      onclick="copyCode(this, 'encodeCanL3(data)')"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <p class="text-slate-600 text-sm mt-2">
+                    Maximum token savings (38-50%), no type hints
+                  </p>
+                </div>
+
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    With Type Hints
+                  </h4>
+                  <div class="code-wrapper">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                      <code class="text-emerald-400 text-sm"
+                        >encodeCanL3(data, { includeTypes: true })</code
+                      >
+                    </div>
+                    <button
+                      class="copy-code-btn"
+                      onclick="copyCode(this, 'encodeCanL3(data, { includeTypes: true })')"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <p class="text-slate-600 text-sm mt-2">
+                    Schema validation enabled (~32% savings)
+                  </p>
+                </div>
+
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    Custom Delimiter
+                  </h4>
+                  <div class="code-wrapper">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                      <code class="text-emerald-400 text-sm"
+                        >encodeCanL3(data, { delimiter: '|' })</code
+                      >
+                    </div>
+                    <!-- Copy button temporarily disabled -->
+                  </div>
+                  <p class="text-slate-600 text-sm mt-2">
+                    Use pipe, tab, or semicolon delimiters
+                  </p>
+                </div>
+
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    Smart Encoding
+                  </h4>
+                  <div class="code-wrapper">
+                    <div class="bg-slate-900 rounded-lg p-4">
+                      <code class="text-emerald-400 text-sm"
+                        >encodeSmart(data)</code
+                      >
+                    </div>
+                    <button
+                      class="copy-code-btn"
+                      onclick="copyCode(this, 'encodeSmart(data)')"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <p class="text-slate-600 text-sm mt-2">
+                    Auto-selects best delimiter and options
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-6">
+              <p class="text-emerald-900 font-semibold mb-2">Need more?</p>
+              <p class="text-emerald-800">
+                Check out the
+                <a
+                  href="https://github.com/CanL3-dev/CanL3/blob/main/docs/GETTING_STARTED.md"
+                  class="underline font-medium"
+                  target="_blank"
+                  >full getting started guide</a
+                >
+                on GitHub.
+              </p>
+            </div>
+          </div>
+
+          <!-- API Reference -->
+          <div x-show="tab === 'api'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                API Reference
+              </h1>
+              <p class="text-lg text-slate-600">
+                Complete CanL3Document API and core functions
+              </p>
+            </div>
+
+            <div class="space-y-4">
+              <h3 class="text-2xl font-semibold text-slate-900">
+                ðŸ“¦ Creation Methods
+              </h3>
+
+              <div
+                class="border border-emerald-200 rounded-lg p-5 bg-emerald-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  CanL3Document.fromJSON(data)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">
+                  Create CanL3 document from JavaScript object
+                </p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-emerald-400 text-xs"
+                    >const doc = CanL3Document.fromJSON({ users: [...] })</code
+                  >
+                </div>
+              </div>
+
+              <div
+                class="border border-emerald-200 rounded-lg p-5 bg-emerald-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  CanL3Document.fromCanL3(text)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">
+                  Parse CanL3 text into document
+                </p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-emerald-400 text-xs"
+                    >const doc = CanL3Document.fromCanL3(CanL3Text)</code
+                  >
+                </div>
+              </div>
+
+              <div
+                class="border border-emerald-200 rounded-lg p-5 bg-emerald-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  CanL3Document.load(path)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">
+                  Load CanL3 file from disk
+                </p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-emerald-400 text-xs"
+                    >const doc = await CanL3Document.load('data.CanL3')</code
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4 mt-8">
+              <h3 class="text-2xl font-semibold text-slate-900">
+                ðŸ” Query Methods
+              </h3>
+
+              <div class="border border-blue-200 rounded-lg p-5 bg-blue-50/30">
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  query(path)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">
+                  JSONPath-like queries with filters
+                </p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-blue-300 text-xs"
+                    >doc.query('users[?(@.role == "admin")]')</code
+                  >
+                </div>
+              </div>
+
+              <div class="border border-blue-200 rounded-lg p-5 bg-blue-50/30">
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  get(path)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">
+                  Get single value at path
+                </p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-blue-300 text-xs"
+                    >doc.get('users[0].name') // "Alice"</code
+                  >
+                </div>
+              </div>
+
+              <div class="border border-blue-200 rounded-lg p-5 bg-blue-50/30">
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  has(path)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">Check if path exists</p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-blue-300 text-xs"
+                    >doc.has('users[0].email') // true/false</code
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4 mt-8">
+              <h3 class="text-2xl font-semibold text-slate-900">
+                âœï¸ Modification Methods
+              </h3>
+
+              <div
+                class="border border-purple-200 rounded-lg p-5 bg-purple-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  set(path, value)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">Update value at path</p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-purple-300 text-xs"
+                    >doc.set('users[0].age', 31)</code
+                  >
+                </div>
+              </div>
+
+              <div
+                class="border border-purple-200 rounded-lg p-5 bg-purple-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  delete(path)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">
+                  Remove field or array element
+                </p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-purple-300 text-xs"
+                    >doc.delete('user.tempField')</code
+                  >
+                </div>
+              </div>
+
+              <div
+                class="border border-purple-200 rounded-lg p-5 bg-purple-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  push(path, value)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">Append to array</p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-purple-300 text-xs"
+                    >doc.push('users', newUser)</code
+                  >
+                </div>
+              </div>
+
+              <div
+                class="border border-purple-200 rounded-lg p-5 bg-purple-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  merge(path, object)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">Deep merge objects</p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-purple-300 text-xs"
+                    >doc.merge('config', updates)</code
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4 mt-8">
+              <h3 class="text-2xl font-semibold text-slate-900">
+                ðŸ’¾ Save & Export
+              </h3>
+
+              <div
+                class="border border-orange-200 rounded-lg p-5 bg-orange-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  toCanL3()
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">Export as CanL3 string</p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-orange-300 text-xs"
+                    >const CanL3Text = doc.toCanL3()</code
+                  >
+                </div>
+              </div>
+
+              <div
+                class="border border-orange-200 rounded-lg p-5 bg-orange-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  toJSON()
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">
+                  Export as JavaScript object
+                </p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-orange-300 text-xs"
+                    >const obj = doc.toJSON()</code
+                  >
+                </div>
+              </div>
+
+              <div
+                class="border border-orange-200 rounded-lg p-5 bg-orange-50/30"
+              >
+                <h4 class="text-lg font-semibold text-slate-900 mb-2">
+                  save(path)
+                </h4>
+                <p class="text-slate-600 mb-3 text-sm">
+                  Atomic file save with backup
+                </p>
+                <div class="bg-slate-900 rounded-lg p-3">
+                  <code class="text-orange-300 text-xs"
+                    >await doc.save('output.CanL3')</code
+                  >
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://github.com/CanL3-dev/CanL3/blob/main/docs/API.md"
+              target="_blank"
+              class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium mt-6"
+            >
+              View complete API reference (50+ methods)
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Query Syntax -->
+          <div x-show="tab === 'query'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                Query Syntax
+              </h1>
+              <p class="text-lg text-slate-600">
+                JSONPath-like query expressions
+              </p>
+            </div>
+
+            <div class="space-y-4">
+              <div class="border-l-4 border-emerald-500 bg-slate-50 p-4">
+                <div class="font-mono text-sm text-slate-700 mb-1">
+                  user.name
+                </div>
+                <div class="text-xs text-slate-500">Property access</div>
+              </div>
+
+              <div class="border-l-4 border-emerald-500 bg-slate-50 p-4">
+                <div class="font-mono text-sm text-slate-700 mb-1">
+                  users[0]
+                </div>
+                <div class="text-xs text-slate-500">Array indexing</div>
+              </div>
+
+              <div class="border-l-4 border-emerald-500 bg-slate-50 p-4">
+                <div class="font-mono text-sm text-slate-700 mb-1">
+                  users[*].name
+                </div>
+                <div class="text-xs text-slate-500">Wildcard (all names)</div>
+              </div>
+
+              <div class="border-l-4 border-emerald-500 bg-slate-50 p-4">
+                <div class="font-mono text-sm text-slate-700 mb-1">
+                  $..email
+                </div>
+                <div class="text-xs text-slate-500">
+                  Recursive descent (all emails at any depth)
+                </div>
+              </div>
+
+              <div class="border-l-4 border-emerald-500 bg-slate-50 p-4">
+                <div class="font-mono text-sm text-slate-700 mb-1">
+                  users[?(@.age > 18)]
+                </div>
+                <div class="text-xs text-slate-500">Filter expression</div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-semibold text-slate-900 mb-4">
+                Filter Operators
+              </h3>
+              <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                  <div class="text-sm font-semibold text-slate-900 mb-2">
+                    Comparison
+                  </div>
+                  <code class="text-xs text-slate-600"
+                    >==, !=, &gt;, &lt;, &gt;=, &lt;=</code
+                  >
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                  <div class="text-sm font-semibold text-slate-900 mb-2">
+                    Logical
+                  </div>
+                  <code class="text-xs text-slate-600">&&, ||, !</code>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                  <div class="text-sm font-semibold text-slate-900 mb-2">
+                    String
+                  </div>
+                  <code class="text-xs text-slate-600"
+                    >contains, startsWith, endsWith</code
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-xl font-semibold text-slate-900 mb-4">
+                Advanced Examples
+              </h3>
+              <div class="space-y-3">
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">
+                    users[?(@.age > 25 && @.active)]
+                  </div>
+                  <div class="text-xs text-slate-600">
+                    Multiple conditions with AND
+                  </div>
+                </div>
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">
+                    users[0:3]
+                  </div>
+                  <div class="text-xs text-slate-600">
+                    Array slicing (first 3 items)
+                  </div>
+                </div>
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">
+                    products[?(@.price < 100)]
+                  </div>
+                  <div class="text-xs text-slate-600">
+                    Filter by numeric value
+                  </div>
+                </div>
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">
+                    users[?(@.name contains "Smith")]
+                  </div>
+                  <div class="text-xs text-slate-600">
+                    String contains filter
+                  </div>
+                </div>
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">
+                    $.store.products[*].price
+                  </div>
+                  <div class="text-xs text-slate-600">All product prices</div>
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://github.com/CanL3-dev/CanL3/blob/main/docs/QUERY_API.md"
+              target="_blank"
+              class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium mt-6"
+            >
+              View complete query documentation
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+            </a>
+          </div>
+
+          <!-- CLI Tools -->
+          <div x-show="tab === 'cli'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">CLI Tools</h1>
+              <p class="text-lg text-slate-600">
+                Command-line interface for CanL3
+              </p>
+            </div>
+
+            <div class="space-y-6">
+              <!-- v2.5.1 Interactive CLI Commands -->
+              <div
+                class="bg-gradient-to-br from-blue-50 to-purple-100 border-2 border-blue-300 rounded-xl p-6"
+              >
+                <h3 class="font-semibold text-blue-900 mb-3">
+                  ðŸŽ® v2.5.1 Interactive CLI Dashboard
+                </h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div class="bg-blue-900 rounded-lg p-5">
+                    <div class="text-blue-300 text-xs mb-2">
+                      INTERACTIVE STATS
+                    </div>
+                    <code class="text-blue-100 text-sm"
+                      >CanL3 stats data.json --interactive</code
+                    >
+                  </div>
+                  <div class="bg-purple-900 rounded-lg p-5">
+                    <div class="text-purple-300 text-xs mb-2">
+                      THEME CUSTOMIZATION
+                    </div>
+                    <code class="text-purple-100 text-sm"
+                      >CanL3 stats data.json -i --theme neon</code
+                    >
+                  </div>
+                  <div class="bg-green-900 rounded-lg p-5">
+                    <div class="text-green-300 text-xs mb-2">
+                      FILE COMPARISON
+                    </div>
+                    <code class="text-green-100 text-sm"
+                      >CanL3 stats data.json --compare</code
+                    >
+                  </div>
+                  <div class="bg-orange-900 rounded-lg p-5">
+                    <div class="text-orange-300 text-xs mb-2">
+                      MULTI-TOKENIZER
+                    </div>
+                    <code class="text-orange-100 text-sm"
+                      >CanL3 stats data.json --tokenizer claude-sonnet-4.5</code
+                    >
+                  </div>
+                </div>
+                <p class="text-blue-800 text-sm mt-3">
+                  Experience the future of CLI with real-time analysis and
+                  beautiful themes
+                </p>
+              </div>
+
+              <!-- Interactive CLI Features -->
+              <div
+                class="bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-300 rounded-xl p-6"
+              >
+                <h3 class="font-semibold text-slate-900 mb-3">
+                  ðŸŒŸ Interactive Features
+                </h3>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <span class="text-emerald-600">âœ“</span>
+                      <span class="text-sm text-slate-700"
+                        >Menu-driven interface with real-time feedback</span
+                      >
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-emerald-600">âœ“</span>
+                      <span class="text-sm text-slate-700"
+                        >4 beautiful color themes (neon, matrix, cyberpunk,
+                        default)</span
+                      >
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-emerald-600">âœ“</span>
+                      <span class="text-sm text-slate-700"
+                        >Side-by-side JSON/CanL3 file comparison</span
+                      >
+                    </div>
+                  </div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                      <span class="text-emerald-600">âœ“</span>
+                      <span class="text-sm text-slate-700"
+                        >Live tokenizer switching (GPT-5, Claude Sonnet 4.5, Gemini 2.5 Pro,
+                        Gemini-2.0)</span
+                      >
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-emerald-600">âœ“</span>
+                      <span class="text-sm text-slate-700"
+                        >Progress visualization and animations</span
+                      >
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-emerald-600">âœ“</span>
+                      <span class="text-sm text-slate-700"
+                        >Deep file structure analysis and exploration</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Standard Commands -->
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-900 rounded-lg p-5">
+                  <div class="text-slate-500 text-xs mb-2">ENCODE</div>
+                  <code class="text-slate-300 text-sm"
+                    >CanL3 encode data.json --smart</code
+                  >
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-5">
+                  <div class="text-slate-500 text-xs mb-2">DECODE</div>
+                  <code class="text-slate-300 text-sm"
+                    >CanL3 decode data.CanL3</code
+                  >
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-5">
+                  <div class="text-slate-500 text-xs mb-2">QUERY</div>
+                  <code class="text-slate-300 text-sm"
+                    >CanL3 query users.CanL3 'users[*]'</code
+                  >
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-5">
+                  <div class="text-slate-500 text-xs mb-2">GET</div>
+                  <code class="text-slate-300 text-sm"
+                    >CanL3 get data.CanL3 "user.name"</code
+                  >
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-5">
+                  <div class="text-slate-500 text-xs mb-2">VALIDATE</div>
+                  <code class="text-slate-300 text-sm"
+                    >CanL3 validate --schema schema.CanL3</code
+                  >
+                </div>
+
+                <div class="bg-slate-900 rounded-lg p-5">
+                  <div class="text-slate-500 text-xs mb-2">STATS</div>
+                  <code class="text-slate-300 text-sm"
+                    >CanL3 stats data.json --tokenizer claude-sonnet-4.5</code
+                  >
+                </div>
+              </div>
+
+              <!-- Interactive CLI Usage Guide -->
+              <div
+                class="bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-300 rounded-xl p-6"
+              >
+                <h3 class="font-semibold text-indigo-900 mb-4">
+                  ðŸš€ Interactive CLI Usage Guide
+                </h3>
+                <div class="space-y-4">
+                  <div class="bg-white rounded-lg p-4 border border-indigo-200">
+                    <h4 class="font-semibold text-indigo-800 mb-2">
+                      Getting Started with Interactive Mode
+                    </h4>
+                    <div class="code-wrapper mb-3">
+                      <div class="bg-slate-900 rounded-lg p-4">
+                        <code class="text-slate-300 text-sm"
+                          >CanL3 stats your-data.json --interactive</code
+                        >
+                      </div>
+                    </div>
+                    <p class="text-slate-700 text-sm">
+                      Launch the interactive dashboard with real-time file
+                      analysis and beautiful visual feedback.
+                    </p>
+                  </div>
+
+                  <div class="bg-white rounded-lg p-4 border border-purple-200">
+                    <h4 class="font-semibold text-purple-800 mb-2">
+                      Beautiful Themes
+                    </h4>
+                    <div class="code-wrapper mb-3">
+                      <div class="bg-slate-900 rounded-lg p-4">
+                        <code class="text-slate-300 text-sm"
+                          >CanL3 stats data.json -i --theme neon # Bright
+                          colors<br />CanL3 stats data.json -i --theme matrix #
+                          Green terminal<br />CanL3 stats data.json -i --theme
+                          cyberpunk # Futuristic style<br />CanL3 stats data.json
+                          -i --theme default # Clean terminal</code
+                        >
+                      </div>
+                    </div>
+                    <p class="text-slate-700 text-sm">
+                      Choose from 4 stunning visual themes for personalized
+                      experience.
+                    </p>
+                  </div>
+
+                  <div class="bg-white rounded-lg p-4 border border-green-200">
+                    <h4 class="font-semibold text-green-800 mb-2">
+                      Interactive Menu Options
+                    </h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                      <div class="flex items-center gap-2">
+                        <span class="text-green-600 font-semibold">1.</span>
+                        <span
+                          >Analyze another file - Deep dive into different
+                          datasets</span
+                        >
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-green-600 font-semibold">2.</span>
+                        <span
+                          >Compare two files - Side-by-side JSON/CanL3
+                          analysis</span
+                        >
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-green-600 font-semibold">3.</span>
+                        <span
+                          >Change theme - Switch visual styles instantly</span
+                        >
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-green-600 font-semibold">4.</span>
+                        <span
+                          >Change tokenizer - Switch between LLM models</span
+                        >
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-green-600 font-semibold">5.</span>
+                        <span
+                          >Detailed statistics - Comprehensive compression
+                          metrics</span
+                        >
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-green-600 font-semibold">6.</span>
+                        <span>Exit - Clean exit with resource cleanup</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bg-white rounded-lg p-4 border border-orange-200">
+                    <h4 class="font-semibold text-orange-800 mb-2">
+                      Multi-Tokenizer Support
+                    </h4>
+                    <div class="code-wrapper mb-3">
+                      <div class="bg-slate-900 rounded-lg p-4">
+                        <code class="text-slate-300 text-sm"
+                          >CanL3 stats data.json --tokenizer gpt-5 # GPT-5<br />CanL3 stats data.json --tokenizer
+                          claude-sonnet-4.5 # Claude Sonnet 4.5<br />CanL3 stats data.json
+                          --tokenizer gemini-2.5-pro # Gemini 2.5 Pro<br />CanL3 stats
+                          data.json --tokenizer gemini-3-pro # Gemini 3 Pro<br />CanL3
+                          stats data.json --tokenizer llama-4 # Llama 4<br />CanL3
+                          stats data.json --tokenizer o200k # OpenAI o200k<br />CanL3
+                          stats data.json --tokenizer cl100k # OpenAI
+                          cl100k</code
+                        >
+                      </div>
+                    </div>
+                    <p class="text-slate-700 text-sm">
+                      Compare token costs across different LLM models in
+                      real-time.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href="https://github.com/CanL3-dev/CanL3/blob/main/docs/CLI.md"
+                target="_blank"
+                class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium"
+              >
+                View full CLI documentation
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  ></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- LLM Prompt -->
+          <div x-show="tab === 'llm'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                LLM Integration Prompt
+              </h1>
+              <p class="text-lg text-slate-600">
+                System prompt for teaching LLMs to read CanL3 data
+              </p>
+            </div>
+
+            <div
+              class="bg-emerald-50 border-2 border-emerald-300 rounded-xl p-6"
+            >
+              <h3 class="font-semibold text-emerald-900 mb-2">
+                ðŸ“‹ Ready-to-Use System Prompt
+              </h3>
+              <p class="text-emerald-800 text-sm">
+                Copy this into your LLM system prompt when sending CanL3
+                formatted data:
+              </p>
+            </div>
+
+            <div class="code-wrapper">
+              <div class="bg-slate-900 rounded-lg p-6">
+                <pre
+                  class="text-slate-300 text-sm leading-relaxed"
+                ><code>The following data is in CanL3 format. Parse it as follows:
+
+â€¢ Lines with [count]{fields}: are array headers, data rows follow
+â€¢ Lines with {fields}: are object headers, field: value pairs follow
+â€¢ Indentation (2 spaces) indicates nesting levels
+â€¢ Default delimiter is comma unless #delimiter header specifies otherwise
+â€¢ Type hints may appear: field:type (e.g., id:u32, name:str)
+  â†’ Ignore the :type part, just parse the values
+â€¢ Value types: unquoted numbers/booleans, quoted strings, null
+â€¢ v2.0 Optimization: May contain #optimize directives (ignore these, they're metadata)
+
+Examples:
+Without types: users[2]{id,name,role}:
+With types: users[2]{id:u32,name:str,role:str}:
+With optimization: #optimize dictionary delta bitpack
+All parse the same - just read the data values.
+
+This represents: {"users": [{"id":1,"name":"Alice","role":"admin"}, {"id":2,"name":"Bob","role":"user"}]}
+
+CanL3 v2.0 provides 60% additional compression while maintaining full LLM compatibility.</code></pre>
+              </div>
+              <!-- Copy button temporarily disabled due to syntax issues -->
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-lg p-6">
+              <h3 class="font-semibold text-slate-900 mb-3">
+                ðŸ’¡ Why This Works
+              </h3>
+              <ul class="space-y-2 text-slate-600 text-sm">
+                <li>â€¢ Prompt is only ~180 tokens</li>
+                <li>â€¢ Negligible cost vs 60-70% total data savings</li>
+                <li>â€¢ Works with GPT, Claude, Gemini, Llama, etc.</li>
+                <li>â€¢ LLMs naturally understand structured text</li>
+                <li>â€¢ v2.0 optimization directives are transparent to LLMs</li>
+              </ul>
+            </div>
+
+            <a
+              href="https://github.com/CanL3-dev/CanL3/blob/main/LLM_PROMPT.md"
+              target="_blank"
+              class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium"
+            >
+              View full LLM integration guide
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Schema Validation -->
+          <div x-show="tab === 'schema'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                Schema Validation
+              </h1>
+              <p class="text-lg text-slate-600">
+                Define and validate data structures with CanL3 schemas
+              </p>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h3 class="font-semibold text-blue-900 mb-2">
+                âœ… What is Schema Validation?
+              </h3>
+              <p class="text-blue-800 text-sm">
+                Schemas let you define data structure, types, and constraints.
+                CanL3 validates data against schemas and can auto-generate
+                TypeScript types.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Basic Schema Example
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre
+                    class="text-slate-300 text-sm leading-relaxed"
+                  ><code>@schema v1
+@strict true
+
+User: obj
+  id: u32 required
+  username: str required min:3 max:20
+  email: str required pattern:email
+  age: u32? min:13 max:150
+  roles: list&lt;str&gt; required
+
+users: list&lt;User&gt; required min:1</code></pre>
+                </div>
+                <!-- Copy button temporarily disabled -->
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Validation
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre
+                    class="text-slate-300 text-sm leading-relaxed"
+                  ><code><span class="text-purple-400">import</span> { parseSchema, validateCanL3 } <span class="text-purple-400">from</span> <span class="text-emerald-400">'CanL3/schema'</span>;
+
+<span class="text-slate-500">// Load and parse schema</span>
+<span class="text-purple-400">const</span> schema = parseSchema(schemaContent);
+
+<span class="text-slate-500">// Validate data</span>
+<span class="text-purple-400">const</span> result = validateCanL3(data, schema);
+
+<span class="text-purple-400">if</span> (!result.valid) {
+  result.errors.forEach(<span class="text-purple-400">err</span> => {
+    console.error(<span class="text-emerald-400">`${err.field}: ${err.message}`</span>);
+  });
+}</code></pre>
+                </div>
+                <!-- Copy button temporarily disabled -->
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Type System
+              </h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-slate-900 mb-2">
+                    Primitive Types
+                  </h4>
+                  <code class="text-xs text-slate-600 block"
+                    >str, u32, i32, u64, i64, f32, f64, bool</code
+                  >
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-slate-900 mb-2">
+                    Complex Types
+                  </h4>
+                  <code class="text-xs text-slate-600 block"
+                    >obj, list, list&lt;T&gt;, optional (field?)</code
+                  >
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-slate-900 mb-2">
+                    String Constraints
+                  </h4>
+                  <code class="text-xs text-slate-600 block"
+                    >min, max, pattern, email, url</code
+                  >
+                </div>
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                  <h4 class="text-sm font-semibold text-slate-900 mb-2">
+                    Number Constraints
+                  </h4>
+                  <code class="text-xs text-slate-600 block"
+                    >min, max, positive, negative, integer</code
+                  >
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://github.com/CanL3-dev/CanL3/blob/main/docs/SCHEMA_SPECIFICATION.md"
+              target="_blank"
+              class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium"
+            >
+              View full schema specification
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Streaming API -->
+          <div x-show="tab === 'streaming'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                Streaming API
+              </h1>
+              <p class="text-lg text-slate-600">
+                Process multi-GB files with constant memory usage
+              </p>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+              <h3 class="font-semibold text-blue-900 mb-2">
+                ðŸŒŠ Why Streaming?
+              </h3>
+              <p class="text-blue-800 text-sm">
+                Stream processing allows you to work with files larger than
+                available RAM. CanL3's line-based format is perfect for streaming
+                - process records one at a time with &lt;100MB memory usage.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Stream Encoding
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre
+                    class="text-slate-300 text-sm leading-relaxed"
+                  ><code><span class="text-purple-400">import</span> { createEncodeStream } <span class="text-purple-400">from</span> <span class="text-emerald-400">'CanL3/stream'</span>;
+<span class="text-purple-400">import</span> { createReadStream, createWriteStream } <span class="text-purple-400">from</span> <span class="text-emerald-400">'fs'</span>;
+
+<span class="text-slate-500">// Stream encode large JSON files</span>
+createReadStream(<span class="text-emerald-400">'huge.json'</span>)
+  .pipe(createEncodeStream({ smart: <span class="text-orange-400">true</span> }))
+  .pipe(createWriteStream(<span class="text-emerald-400">'huge.CanL3'</span>));</code></pre>
+                </div>
+                <!-- Copy button temporarily disabled -->
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Stream Query
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre
+                    class="text-slate-300 text-sm leading-relaxed"
+                  ><code><span class="text-purple-400">import</span> { streamQuery } <span class="text-purple-400">from</span> <span class="text-emerald-400">'CanL3/stream'</span>;
+
+<span class="text-slate-500">// Query huge files efficiently</span>
+<span class="text-purple-400">await</span> streamQuery(
+  <span class="text-emerald-400">'large-dataset.CanL3'</span>,
+  <span class="text-emerald-400">'users[?(@.active)]'</span>,
+  (chunk) => {
+    <span class="text-slate-500">// Process each matching chunk</span>
+    console.log(chunk);
+  }
+);
+
+<span class="text-slate-500">// Memory stays constant ~10MB</span></code></pre>
+                </div>
+                <!-- Copy button temporarily disabled -->
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Performance Metrics
+              </h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div
+                  class="bg-emerald-50 border border-emerald-200 rounded-lg p-5"
+                >
+                  <div class="text-3xl font-bold text-emerald-600 mb-1">
+                    ~50 MB/s
+                  </div>
+                  <div class="text-sm text-slate-600">Processing Speed</div>
+                </div>
+                <div
+                  class="bg-emerald-50 border border-emerald-200 rounded-lg p-5"
+                >
+                  <div class="text-3xl font-bold text-emerald-600 mb-1">
+                    &lt;100 MB
+                  </div>
+                  <div class="text-sm text-slate-600">Memory Usage</div>
+                </div>
+                <div
+                  class="bg-emerald-50 border border-emerald-200 rounded-lg p-5"
+                >
+                  <div class="text-3xl font-bold text-emerald-600 mb-1">
+                    10+ GB
+                  </div>
+                  <div class="text-sm text-slate-600">File Size Support</div>
+                </div>
+                <div
+                  class="bg-emerald-50 border border-emerald-200 rounded-lg p-5"
+                >
+                  <div class="text-3xl font-bold text-emerald-600 mb-1">
+                    O(1)
+                  </div>
+                  <div class="text-sm text-slate-600">Memory Complexity</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- v2.0 Optimization -->
+          <div x-show="tab === 'optimization'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                v2.0 Advanced Optimization
+              </h1>
+              <p class="text-lg text-slate-600">
+                10 optimization strategies for up to 60% additional compression
+              </p>
+            </div>
+
+            <div
+              class="bg-gradient-to-br from-emerald-50 to-emerald-100 border-2 border-emerald-200 rounded-xl p-6"
+            >
+              <h3 class="font-semibold text-emerald-900 mb-3">
+                ðŸš€ Complete Optimization Suite
+              </h3>
+              <p class="text-emerald-800 mb-4">
+                CanL3 v2.0 introduces 10 advanced optimization strategies that
+                provide up to 60% additional compression beyond standard CanL3
+                encoding.
+              </p>
+
+              <div class="grid md:grid-cols-3 gap-4">
+                <div
+                  class="bg-white/80 backdrop-blur rounded-lg p-4 border border-emerald-200"
+                >
+                  <h4 class="font-semibold text-slate-900 mb-1">
+                    ðŸŽ¯ 10 Strategies
+                  </h4>
+                  <p class="text-xs text-slate-600">
+                    Dictionary, Delta, RLE, Bit Packing, Column Reorder,
+                    Quantizer, Schema Inheritance, Hierarchical Grouping,
+                    Tokenizer Aware, Adaptive
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 backdrop-blur rounded-lg p-4 border border-emerald-200"
+                >
+                  <h4 class="font-semibold text-slate-900 mb-1">
+                    ðŸ“ˆ <strong>60%</strong> Savings
+                  </h4>
+                  <p class="text-xs text-slate-600">
+                    Additional compression beyond standard CanL3 with automatic
+                    strategy selection
+                  </p>
+                </div>
+                <div
+                  class="bg-white/80 backdrop-blur rounded-lg p-4 border border-emerald-200"
+                >
+                  <h4 class="font-semibold text-slate-900 mb-1">
+                    ðŸš€ Zero Effort
+                  </h4>
+                  <p class="text-xs text-slate-600">
+                    One-line activation with automatic optimization
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Quick Start
+              </h3>
+              <div class="space-y-4">
+                <div class="code-wrapper">
+                  <div class="bg-slate-900 rounded-lg p-4">
+                    <code class="text-emerald-400 text-sm"
+                      >CanL3 encode data.json --optimize --verbose</code
+                    >
+                  </div>
+                  <button
+                    class="copy-code-btn"
+                    onclick="copyCode(this, 'CanL3 encode data.json --optimize --verbose')"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <p class="text-slate-600 text-sm">
+                  Enable all optimization strategies with a single command
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Optimization Strategies
+              </h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    ðŸ“š Dictionary Encoding
+                  </h4>
+                  <p class="text-slate-600 text-sm">
+                    Compress repetitive values using lookup dictionaries
+                  </p>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    â­ï¸ Delta Encoding
+                  </h4>
+                  <p class="text-slate-600 text-sm">
+                    Compress sequential numeric data (timestamps, IDs, counters)
+                  </p>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    ðŸ”„ Run-Length Encoding
+                  </h4>
+                  <p class="text-slate-600 text-sm">
+                    Compress repeated consecutive values
+                  </p>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    ðŸ’¾ Bit Packing
+                  </h4>
+                  <p class="text-slate-600 text-sm">
+                    Optimized binary encoding for booleans and small integers
+                  </p>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    ðŸ”„ Column Reordering
+                  </h4>
+                  <p class="text-slate-600 text-sm">
+                    Optimize field order for better compression
+                  </p>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">
+                    ðŸ”¢ Numeric Quantization
+                  </h4>
+                  <p class="text-slate-600 text-sm">
+                    Reduce decimal precision safely
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                API Usage
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre
+                    class="text-slate-300 text-sm leading-relaxed"
+                  ><code><span class="text-purple-400">import</span> { AdaptiveOptimizer } <span class="text-purple-400">from</span> <span class="text-emerald-400">'CanL3'</span>;
+
+<span class="text-slate-500">// Create optimizer</span>
+<span class="text-purple-400">const</span> optimizer = <span class="text-purple-400">new</span> AdaptiveOptimizer();
+
+<span class="text-slate-500">// Analyze dataset</span>
+<span class="text-purple-400">const</span> analysis = optimizer.analyzeDataset(data);
+console.log(<span class="text-emerald-400">`Estimated savings: ${analysis.estimatedSavings}%`</span>);
+
+<span class="text-slate-500">// Apply optimization</span>
+<span class="text-purple-400">const</span> result = optimizer.optimize(data);
+console.log(<span class="text-emerald-400">`Directives: ${result.directives.length}`</span>);</code></pre>
+                </div>
+                <!-- Copy button temporarily disabled -->
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Performance Impact
+              </h3>
+              <div class="grid md:grid-cols-4 gap-4">
+                <div
+                  class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-center"
+                >
+                  <div class="text-2xl font-bold text-emerald-600 mb-1">
+                    60%
+                  </div>
+                  <div class="text-xs text-slate-600">Additional Savings</div>
+                </div>
+                <div
+                  class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center"
+                >
+                  <div class="text-2xl font-bold text-blue-600 mb-1">70%</div>
+                  <div class="text-xs text-slate-600">Total vs JSON</div>
+                </div>
+                <div
+                  class="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center"
+                >
+                  <div class="text-2xl font-bold text-purple-600 mb-1">
+                    O(n)
+                  </div>
+                  <div class="text-xs text-slate-600">Time Complexity</div>
+                </div>
+                <div
+                  class="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center"
+                >
+                  <div class="text-2xl font-bold text-orange-600 mb-1">
+                    100%
+                  </div>
+                  <div class="text-xs text-slate-600">Backward Compatible</div>
+                </div>
+              </div>
+            </div>
+
+            <a
+              href="https://github.com/CanL3-dev/CanL3/blob/main/docs/OPTIMIZATION.md"
+              target="_blank"
+              class="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 font-medium"
+            >
+              View complete optimization documentation
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Implementation -->
+          <div x-show="tab === 'impl'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                Implementation Guide
+              </h1>
+              <p class="text-lg text-slate-600">
+                Build CanL3 libraries in any language
+              </p>
+            </div>
+
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-6">
+              <h3 class="font-semibold text-slate-900 mb-3">
+                Complete Guides Available
+              </h3>
+              <p class="text-slate-600 mb-4">
+                95KB of implementation documentation with algorithms,
+                pseudo-code, and test requirements.
+              </p>
+
+              <div class="space-y-3">
+                <a
+                  href="https://github.com/CanL3-dev/CanL3/blob/main/docs/IMPLEMENTATION_REFERENCE.md"
+                  target="_blank"
+                  class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 transition"
+                >
+                  <div>
+                    <div class="font-semibold text-slate-900">
+                      Implementation Reference
+                    </div>
+                    <div class="text-sm text-slate-600">
+                      Algorithms, type system, test cases (58KB)
+                    </div>
+                  </div>
+                  <svg
+                    class="w-5 h-5 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </a>
+
+                <a
+                  href="https://github.com/CanL3-dev/CanL3/blob/main/docs/TRANSFORMATION_EXAMPLES.md"
+                  target="_blank"
+                  class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-lg hover:border-slate-300 transition"
+                >
+                  <div>
+                    <div class="font-semibold text-slate-900">
+                      Transformation Examples
+                    </div>
+                    <div class="text-sm text-slate-600">
+                      20+ JSON â†” CanL3 examples (37KB)
+                    </div>
+                  </div>
+                  <svg
+                    class="w-5 h-5 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Supported Languages
+              </h3>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="border border-slate-200 rounded-lg p-4 text-center">
+                  <div class="text-3xl mb-2">ðŸ</div>
+                  <div class="font-medium text-slate-700">Python</div>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4 text-center">
+                  <div class="text-3xl mb-2">ðŸ”µ</div>
+                  <div class="font-medium text-slate-700">Go</div>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4 text-center">
+                  <div class="text-3xl mb-2">ðŸ¦€</div>
+                  <div class="font-medium text-slate-700">Rust</div>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4 text-center">
+                  <div class="text-3xl mb-2">â˜•</div>
+                  <div class="font-medium text-slate-700">Java</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aggregation Functions -->
+          <div x-show="tab === 'aggregation'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                ðŸ“Š Aggregation Functions
+              </h1>
+              <p class="text-lg text-slate-600">
+                Powerful data aggregation with fluent API - count, sum, avg, min, max, groupBy and more
+              </p>
+            </div>
+
+            <div class="bg-gradient-to-br from-emerald-50 to-green-100 border-2 border-emerald-300 rounded-xl p-6">
+              <h3 class="font-semibold text-emerald-900 mb-2">
+                ðŸ†• New in v2.5.1
+              </h3>
+              <p class="text-emerald-800 text-sm">
+                Full-featured aggregation system with 15+ functions, fluent chaining, and deep integration with CanL3Document queries.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Quick Start
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-purple-400">import</span> { CanL3Document } <span class="text-purple-400">from</span> <span class="text-emerald-400">'CanL3'</span>;
+
+<span class="text-purple-400">const</span> doc = CanL3Document.fromJSON({ users: [...], orders: [...] });
+
+<span class="text-slate-500">// Count users</span>
+doc.count(<span class="text-emerald-400">'users[*]'</span>);                    <span class="text-slate-500">// 42</span>
+
+<span class="text-slate-500">// Sum order totals</span>
+doc.sum(<span class="text-emerald-400">'orders[*]'</span>, <span class="text-emerald-400">'total'</span>);           <span class="text-slate-500">// 15420.50</span>
+
+<span class="text-slate-500">// Average age</span>
+doc.avg(<span class="text-emerald-400">'users[*]'</span>, <span class="text-emerald-400">'age'</span>);             <span class="text-slate-500">// 29.5</span>
+
+<span class="text-slate-500">// Group by country</span>
+doc.groupBy(<span class="text-emerald-400">'users[*]'</span>, <span class="text-emerald-400">'country'</span>);    <span class="text-slate-500">// { TR: [...], US: [...] }</span>
+
+<span class="text-slate-500">// Chained operations</span>
+doc.aggregate(<span class="text-emerald-400">'users[*]'</span>)
+  .filter(u => u.active)
+  .orderBy(<span class="text-emerald-400">'age'</span>, <span class="text-emerald-400">'desc'</span>)
+  .take(<span class="text-orange-400">10</span>)
+  .toArray();</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Available Functions
+              </h3>
+              <div class="grid md:grid-cols-3 gap-4">
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Basic</h4>
+                  <code class="text-xs text-slate-600 block">count(), sum(field), avg(field), min(field), max(field)</code>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Grouping</h4>
+                  <code class="text-xs text-slate-600 block">groupBy(field), distinct(field), frequency(field)</code>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Statistical</h4>
+                  <code class="text-xs text-slate-600 block">stats(), median(), percentile(n), variance, stdDev</code>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Transform</h4>
+                  <code class="text-xs text-slate-600 block">filter(), map(), reduce(), flatten()</code>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Selection</h4>
+                  <code class="text-xs text-slate-600 block">first(), last(), at(n), take(n), skip(n)</code>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Sorting</h4>
+                  <code class="text-xs text-slate-600 block">orderBy(field, 'asc'|'desc'), partition(fn)</code>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Full Statistics Example
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-purple-400">const</span> stats = doc.aggregate(<span class="text-emerald-400">'products[*]'</span>).stats(<span class="text-emerald-400">'price'</span>);
+<span class="text-slate-500">// Returns:</span>
+<span class="text-slate-500">// {</span>
+<span class="text-slate-500">//   count: 150,</span>
+<span class="text-slate-500">//   sum: 7499.50,</span>
+<span class="text-slate-500">//   avg: 49.99,</span>
+<span class="text-slate-500">//   min: 9.99,</span>
+<span class="text-slate-500">//   max: 999.99,</span>
+<span class="text-slate-500">//   variance: 12500.25,</span>
+<span class="text-slate-500">//   stdDev: 111.80</span>
+<span class="text-slate-500">// }</span></code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Fuzzy Matching -->
+          <div x-show="tab === 'fuzzy'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                ðŸ” Fuzzy Matching
+              </h1>
+              <p class="text-lg text-slate-600">
+                Levenshtein, Jaro-Winkler, Soundex algorithms for approximate string matching
+              </p>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-300 rounded-xl p-6">
+              <h3 class="font-semibold text-blue-900 mb-2">
+                ðŸ†• New in v2.5.1
+              </h3>
+              <p class="text-blue-800 text-sm">
+                Find similar strings even with typos, variations, or phonetic similarities. Perfect for search, name matching, and data cleanup.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Query Operators
+              </h3>
+              <div class="space-y-3">
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">
+                    users[?(@.name ~= 'john')]
+                  </div>
+                  <div class="text-xs text-slate-600">Fuzzy equality match (finds John, Jon, Joan...)</div>
+                </div>
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">
+                    users[?(@.name ~contains 'smith')]
+                  </div>
+                  <div class="text-xs text-slate-600">Fuzzy contains (finds Smith, Smyth, Smithe...)</div>
+                </div>
+                <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">
+                    users[?(@.name soundsLike 'Robert')]
+                  </div>
+                  <div class="text-xs text-slate-600">Phonetic match using Soundex (finds Robert, Rupert...)</div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Direct API Usage
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-purple-400">import</span> {
+  levenshteinDistance,
+  fuzzyMatch,
+  soundsLike,
+  fuzzySearch
+} <span class="text-purple-400">from</span> <span class="text-emerald-400">'CanL3/query/fuzzy-matcher'</span>;
+
+<span class="text-slate-500">// Levenshtein distance</span>
+levenshteinDistance(<span class="text-emerald-400">'kitten'</span>, <span class="text-emerald-400">'sitting'</span>);  <span class="text-slate-500">// 3</span>
+
+<span class="text-slate-500">// Fuzzy match with threshold</span>
+fuzzyMatch(<span class="text-emerald-400">'John'</span>, <span class="text-emerald-400">'Jon'</span>, { threshold: <span class="text-orange-400">0.8</span> });  <span class="text-slate-500">// true</span>
+
+<span class="text-slate-500">// Phonetic matching</span>
+soundsLike(<span class="text-emerald-400">'Smith'</span>, <span class="text-emerald-400">'Smyth'</span>);  <span class="text-slate-500">// true</span>
+
+<span class="text-slate-500">// Search with ranking</span>
+fuzzySearch(<span class="text-emerald-400">'JavaScrpt'</span>, [<span class="text-emerald-400">'JavaScript'</span>, <span class="text-emerald-400">'TypeScript'</span>, <span class="text-emerald-400">'Python'</span>]);
+<span class="text-slate-500">// [{ value: 'JavaScript', similarity: 0.9, index: 0 }]</span></code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Algorithms
+              </h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Levenshtein</h4>
+                  <p class="text-xs text-slate-600">Edit distance - insertions, deletions, substitutions</p>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Jaro-Winkler</h4>
+                  <p class="text-xs text-slate-600">Optimized for short strings with prefix bonus</p>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Dice Coefficient</h4>
+                  <p class="text-xs text-slate-600">Bigram overlap for longer text comparison</p>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Soundex/Metaphone</h4>
+                  <p class="text-xs text-slate-600">Phonetic encoding for name matching</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Temporal Queries -->
+          <div x-show="tab === 'temporal'" class="space-y-8">
+            <div>
+              <h1 class="text-4xl font-bold text-slate-900 mb-4">
+                â° Temporal Queries
+              </h1>
+              <p class="text-lg text-slate-600">
+                Filter and compare dates with natural syntax - @now-7d, @today, before, after, sameWeek
+              </p>
+            </div>
+
+            <div class="bg-gradient-to-br from-orange-50 to-amber-100 border-2 border-orange-300 rounded-xl p-6">
+              <h3 class="font-semibold text-orange-900 mb-2">
+                ðŸ†• New in v2.5.1
+              </h3>
+              <p class="text-orange-800 text-sm">
+                Query data by date ranges, relative times, and calendar periods. Perfect for logs, events, and time-series data.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Temporal Literals
+              </h3>
+              <div class="space-y-3">
+                <div class="border-l-4 border-orange-500 bg-orange-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">@now</div>
+                  <div class="text-xs text-slate-600">Current timestamp</div>
+                </div>
+                <div class="border-l-4 border-orange-500 bg-orange-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">@today, @yesterday, @tomorrow</div>
+                  <div class="text-xs text-slate-600">Named dates (start of day)</div>
+                </div>
+                <div class="border-l-4 border-orange-500 bg-orange-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">@now-7d, @now+1w, @now-3M</div>
+                  <div class="text-xs text-slate-600">Relative time (d=days, w=weeks, M=months, y=years)</div>
+                </div>
+                <div class="border-l-4 border-orange-500 bg-orange-50 p-4">
+                  <div class="font-mono text-sm text-slate-800 mb-1">@2025-01-15, @2025-01-15T10:30:00Z</div>
+                  <div class="text-xs text-slate-600">ISO 8601 dates</div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Query Examples
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-slate-500">// Events in the last 7 days</span>
+doc.query(<span class="text-emerald-400">'events[?(@.date > @now-7d)]'</span>);
+
+<span class="text-slate-500">// Orders from today</span>
+doc.query(<span class="text-emerald-400">'orders[?(@.createdAt sameDay @today)]'</span>);
+
+<span class="text-slate-500">// Logs before a specific date</span>
+doc.query(<span class="text-emerald-400">'logs[?(@.timestamp before @2025-01-01)]'</span>);
+
+<span class="text-slate-500">// Tasks due this week</span>
+doc.query(<span class="text-emerald-400">'tasks[?(@.dueDate sameWeek @now)]'</span>);
+
+<span class="text-slate-500">// Records older than 3 months</span>
+doc.query(<span class="text-emerald-400">'records[?(@.date daysAgo 90)]'</span>);</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Temporal Operators
+              </h3>
+              <div class="grid md:grid-cols-2 gap-4">
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Comparison</h4>
+                  <code class="text-xs text-slate-600 block">before, after, between</code>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Relative</h4>
+                  <code class="text-xs text-slate-600 block">daysAgo, weeksAgo, monthsAgo, yearsAgo</code>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Calendar</h4>
+                  <code class="text-xs text-slate-600 block">sameDay, sameWeek, sameMonth, sameYear</code>
+                </div>
+                <div class="border border-slate-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-slate-900 mb-2">Units</h4>
+                  <code class="text-xs text-slate-600 block">s(sec), m(min), h(hour), d(day), w(week), M(month), y(year)</code>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 class="text-2xl font-semibold text-slate-900 mb-4">
+                Direct API Usage
+              </h3>
+              <div class="code-wrapper">
+                <div class="bg-slate-900 rounded-lg p-6">
+                  <pre class="text-slate-300 text-sm leading-relaxed"><code><span class="text-purple-400">import</span> {
+  parseTemporalLiteral,
+  isBefore,
+  isAfter,
+  isSameDay
+} <span class="text-purple-400">from</span> <span class="text-emerald-400">'CanL3/query/temporal-evaluator'</span>;
+
+<span class="text-slate-500">// Parse temporal literal</span>
+<span class="text-purple-400">const</span> lastWeek = parseTemporalLiteral(<span class="text-emerald-400">'@now-7d'</span>);
+console.log(lastWeek.timestamp);  <span class="text-slate-500">// Unix timestamp</span>
+
+<span class="text-slate-500">// Compare dates</span>
+isBefore(<span class="text-purple-400">new</span> Date(<span class="text-emerald-400">'2025-01-01'</span>), <span class="text-purple-400">new</span> Date(<span class="text-emerald-400">'2025-12-31'</span>));  <span class="text-slate-500">// true</span>
+isAfter(<span class="text-purple-400">new</span> Date(<span class="text-emerald-400">'2025-12-31'</span>), <span class="text-purple-400">new</span> Date(<span class="text-emerald-400">'2025-01-01'</span>));   <span class="text-slate-500">// true</span>
+isSameDay(<span class="text-purple-400">new</span> Date(), <span class="text-purple-400">new</span> Date());  <span class="text-slate-500">// true</span></code></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-slate-50">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- Brand -->
+          <div class="col-span-1 md:col-span-2">
+            <div class="flex items-center gap-3 mb-4">
+              <div
+                class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center"
+              >
+                <span class="text-2xl font-bold text-white">T</span>
+              </div>
+              <span class="text-2xl font-bold text-slate-900">CanL3</span>
+            </div>
+            <p class="text-slate-600 mb-4 max-w-md">
+              Token-Optimized Notation Language.<br />
+              Reduce your LLM token costs by 32-45% while maintaining human
+              readability.
+            </p>
+            <div class="flex items-center gap-4 text-sm text-slate-500">
+              <span>Zero dependencies</span> <span>â€¢</span>
+              <span>100% test coverage</span> <span>â€¢</span>
+              <span>TypeScript native</span>
+            </div>
+            <div class="flex items-center gap-4 mt-4">
+              <a
+                href="https://github.com/CanL3-dev/CanL3"
+                target="_blank"
+                class="text-slate-400 hover:text-slate-600"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </a>
+              <a
+                href="https://www.npmjs.com/package/CanL3"
+                target="_blank"
+                class="text-slate-400 hover:text-slate-600"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm1.335 17.517h-2.67v-1.5h2.67v1.5zm0-2.5h-2.67V9.633h2.67v5.384zm0-6.384h-2.67v-1.5h2.67v1.5z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+          <!-- Links -->
+          <div>
+            <h3 class="font-semibold text-slate-900 mb-4">Quick Links</h3>
+            <ul class="space-y-2 text-sm">
+              <li>
+                <a href="docs.html" class="text-slate-900 font-semibold"
+                  >Documentation</a
+                >
+              </li>
+              <li>
+                <a
+                  href="examples.html"
+                  class="text-slate-600 hover:text-slate-900 transition"
+                  >Playground</a
+                >
+              </li>
+              <li>
+                <a
+                  href="cli.html"
+                  class="text-blue-600 hover:text-blue-800 font-semibold"
+                  >Interactive CLI</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/CanL3-dev/CanL3"
+                  target="_blank"
+                  class="text-slate-600 hover:text-slate-900 transition"
+                  >GitHub</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.npmjs.com/package/CanL3"
+                  target="_blank"
+                  class="text-slate-600 hover:text-slate-900 transition"
+                  >npm Package</a
+                >
+              </li>
+            </ul>
+          </div>
+          <!-- GitHub Star Button -->
+          <div>
+            <h3 class="font-semibold text-slate-900 mb-4">Support</h3>
+            <a
+              href="https://github.com/CanL3-dev/CanL3"
+              target="_blank"
+              class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
+                />
+              </svg>
+              Star on GitHub
+            </a>
+            <div class="mt-4">
+              <a
+                href="https://www.npmjs.com/package/CanL3"
+                target="_blank"
+                class="text-xs text-slate-500 hover:text-slate-700 transition"
+              >
+                <span class="font-semibold">npm:</span> CanL3
+              </a>
+            </div>
+            <div class="text-xs text-slate-500 mt-2">
+              <span class="font-semibold">Version:</span> 2.5.1
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-slate-200 mt-8 pt-8 text-center text-sm text-slate-500"
+        >
+          <p>&copy; 2025 CanL3. All rights reserved. Licensed under MIT.</p>
+        </div>
+      </div>
+    </footer>
+    <script
+      defer
+      src="https://analytics.caprover.ecostack.ee/script.js"
+      data-website-id="8e65fa51-ece0-41b7-85fa-43e1862047a6"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </body>
+</html>
+
+

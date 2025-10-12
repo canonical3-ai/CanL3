@@ -1,0 +1,74 @@
+﻿# CanL3 Test Sample - Syntax Highlighting Test
+# This file tests all CanL3 syntax features
+
+@version 1.0
+@delimiter ,
+@types {name: string, age: number, active: boolean}
+
+# Simple key-value pairs
+name: John Doe
+age: 30
+active: true
+score: 95.5
+status: null
+
+# Multiline string
+description: """
+This is a multiline
+description with "quotes"
+and special characters: \n\t
+"""
+
+# Inline object
+user: {name: Alice, age: 25, role: admin}
+
+# Inline array
+tags: [javascript, typescript, node.js]
+numbers: [1, 2, 3, 4, 5]
+
+# Nested object
+address:
+  street: 123 Main St
+  city: New York
+  zipcode: 10001
+  coordinates: {lat: 40.7128, lng: -74.0060}
+
+# Array of objects
+users[0]:
+  name: Bob
+  email: bob@example.com
+  active: true
+
+users[1]:
+  name: Carol
+  email: carol@example.com
+  active: false
+
+# Complex nested structure
+config:
+  database:
+    host: localhost
+    port: 5432
+    credentials: {username: admin, password: secret123}
+
+  features:
+    enabled: [auth, logging, caching]
+    disabled: [analytics]
+
+# Array with mixed delimiters
+mixed: item1, item2, item3
+piped: value1 | value2 | value3
+tabbed: col1	col2	col3
+
+# Edge cases
+escaped: "String with \"quotes\" and \\backslash"
+scientific: 1.23e-4
+negative: -42
+boolean_values: true, false
+null_value: null
+
+# Comments at different positions
+field1: value1  # inline comment
+# comment before field
+field2: value2
+

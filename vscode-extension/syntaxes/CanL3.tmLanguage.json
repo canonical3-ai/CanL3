@@ -1,0 +1,229 @@
+﻿{
+  "name": "CanL3",
+  "scopeName": "source.CanL3",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#directives"
+    },
+    {
+      "include": "#headers"
+    },
+    {
+      "include": "#inline-objects"
+    },
+    {
+      "include": "#arrays"
+    },
+    {
+      "include": "#values"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.CanL3",
+          "match": "^\\s*#.*$"
+        }
+      ]
+    },
+    "directives": {
+      "patterns": [
+        {
+          "name": "meta.directive.CanL3",
+          "match": "^@(version|delimiter|type|schema|types)\\b(.*)$",
+          "captures": {
+            "1": {
+              "name": "keyword.control.directive.CanL3"
+            },
+            "2": {
+              "name": "string.unquoted.CanL3"
+            }
+          }
+        }
+      ]
+    },
+    "headers": {
+      "patterns": [
+        {
+          "name": "entity.name.section.array.CanL3",
+          "match": "^([a-zA-Z_][a-zA-Z0-9_]*)\\[(\\d+)\\]:",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.CanL3"
+            },
+            "2": {
+              "name": "constant.numeric.CanL3"
+            }
+          }
+        },
+        {
+          "name": "entity.name.section.CanL3",
+          "match": "^([a-zA-Z_][a-zA-Z0-9_]*):",
+          "captures": {
+            "1": {
+              "name": "entity.name.tag.CanL3"
+            }
+          }
+        }
+      ]
+    },
+    "inline-objects": {
+      "patterns": [
+        {
+          "name": "meta.inline-object.CanL3",
+          "begin": "\\{",
+          "end": "\\}",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.dictionary.begin.CanL3"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.dictionary.end.CanL3"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#object-keys"
+            },
+            {
+              "include": "#delimiters"
+            },
+            {
+              "include": "#values"
+            },
+            {
+              "include": "#inline-objects"
+            }
+          ]
+        }
+      ]
+    },
+    "arrays": {
+      "patterns": [
+        {
+          "name": "meta.array.CanL3",
+          "begin": "\\[",
+          "end": "\\]",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.array.begin.CanL3"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.array.end.CanL3"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#delimiters"
+            },
+            {
+              "include": "#values"
+            },
+            {
+              "include": "#inline-objects"
+            },
+            {
+              "include": "#arrays"
+            }
+          ]
+        }
+      ]
+    },
+    "object-keys": {
+      "patterns": [
+        {
+          "name": "meta.object-key.CanL3",
+          "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s*:",
+          "captures": {
+            "1": {
+              "name": "variable.other.property.CanL3"
+            }
+          }
+        }
+      ]
+    },
+    "delimiters": {
+      "patterns": [
+        {
+          "name": "punctuation.separator.CanL3",
+          "match": "[,|;\\t]"
+        }
+      ]
+    },
+    "values": {
+      "patterns": [
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#numbers"
+        },
+        {
+          "include": "#booleans"
+        },
+        {
+          "include": "#null"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.triple.CanL3",
+          "begin": "\"\"\"",
+          "end": "\"\"\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.CanL3",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.double.CanL3",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.CanL3",
+              "match": "\\\\([\"\\\\/bfnrt]|u[0-9a-fA-F]{4})"
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.CanL3",
+          "match": "-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?"
+        }
+      ]
+    },
+    "booleans": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.CanL3",
+          "match": "\\b(true|false)\\b"
+        }
+      ]
+    },
+    "null": {
+      "patterns": [
+        {
+          "name": "constant.language.null.CanL3",
+          "match": "\\bnull\\b"
+        }
+      ]
+    }
+  }
+}
+

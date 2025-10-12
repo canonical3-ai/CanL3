@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CanL3 Browser Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 { color: #4ec9b0; }
+    h2 { color: #9cdcfe; margin-top: 30px; }
+    pre {
+      background: #2d2d2d;
+      padding: 15px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    .success { color: #4ec9b0; }
+    .error { color: #f48771; }
+    button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 10px 5px;
+    }
+    button:hover { background: #1177bb; }
+    #output { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>ðŸš€ CanL3 Browser Test (v0.5.0)</h1>
+  <p>Testing CanL3 in the browser with all three bundle formats.</p>
+
+  <h2>Test 1: ESM Bundle</h2>
+  <button onclick="testESM()">Run ESM Test</button>
+  <pre id="esm-output">Click button to test...</pre>
+
+  <h2>Test 2: UMD Bundle</h2>
+  <button onclick="testUMD()">Run UMD Test</button>
+  <pre id="umd-output">Click button to test...</pre>
+
+  <h2>Test 3: IIFE Bundle</h2>
+  <button onclick="testIIFE()">Run IIFE Test</button>
+  <pre id="iife-output">Click button to test...</pre>
+
+  <!-- IIFE Bundle (loads immediately) -->
+  <script src="../dist/browser/CanL3.iife.js"></script>
+
+  <!-- ESM Test -->
+  <script type="module">
+    import { encodeCanL3, decodeCanL3, encodeSmart } from '../dist/browser/CanL3.esm.js';
+
+    window.testESM = function() {
+      const output = document.getElementById('esm-output');
+      try {
+        const data = {
+          users: [
+            { id: 1, name: 'Alice', role: 'admin' },
+            { id: 2, name: 'Bob', role: 'user' }
+          ],
+          count: 2
+        };
+
+        // Encode
+        const CanL3 = encodeCanL3(data, { delimiter: ',' });
+
+        // Decode
+        const decoded = decodeCanL3(CanL3);
+
+        // Verify round-trip
+        const match = JSON.stringify(data) === JSON.stringify(decoded);
+
+        output.innerHTML = `<span class="success">âœ… ESM Test Passed!</span>
+
+Input Data:
+${JSON.stringify(data, null, 2)}
+
+CanL3 Output:
+${CanL3}
+
+Round-trip Match: ${match ? '<span class="success">âœ… YES</span>' : '<span class="error">âŒ NO</span>'}
+
+Bundle Format: ESM (6.32 KB gzipped)`;
+      } catch (error) {
+        output.innerHTML = `<span class="error">âŒ ESM Test Failed: ${error.message}</span>`;
+      }
+    };
+  </script>
+
+  <!-- UMD Test -->
+  <script>
+    // UMD loaded via require or global
+    function loadUMD() {
+      return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = '../dist/browser/CanL3.umd.js';
+        script.onload = () => resolve(window.CanL3);
+        document.head.appendChild(script);
+      });
+    }
+
+    window.testUMD = async function() {
+      const output = document.getElementById('umd-output');
+      try {
+        // UMD might already be loaded or we load it
+        const CanL3 = window.CanL3 || await loadUMD();
+
+        const data = {
+          config: {
+            host: 'localhost',
+            port: 3000,
+            enabled: true
+          }
+        };
+
+        const CanL3 = CanL3.encodeCanL3(data);
+        const decoded = CanL3.decodeCanL3(CanL3);
+        const match = JSON.stringify(data) === JSON.stringify(decoded);
+
+        output.innerHTML = `<span class="success">âœ… UMD Test Passed!</span>
+
+Input Data:
+${JSON.stringify(data, null, 2)}
+
+CanL3 Output:
+${CanL3}
+
+Round-trip Match: ${match ? '<span class="success">âœ… YES</span>' : '<span class="error">âŒ NO</span>'}
+
+Bundle Format: UMD (4.53 KB gzipped)`;
+      } catch (error) {
+        output.innerHTML = `<span class="error">âŒ UMD Test Failed: ${error.message}</span>`;
+      }
+    };
+  </script>
+
+  <!-- IIFE Test -->
+  <script>
+    window.testIIFE = function() {
+      const output = document.getElementById('iife-output');
+      try {
+        // IIFE creates global CanL3
+        if (!window.CanL3) {
+          throw new Error('CanL3 global not found');
+        }
+
+        const data = {
+          products: [
+            { id: 101, name: 'Widget', price: 29.99 },
+            { id: 102, name: 'Gadget', price: 49.99 }
+          ]
+        };
+
+        const CanL3 = CanL3.encodeSmart(data);
+        const decoded = CanL3.decodeCanL3(CanL3);
+        const match = JSON.stringify(data) === JSON.stringify(decoded);
+
+        // Calculate compression
+        const jsonSize = JSON.stringify(data).length;
+        const CanL3Size = CanL3.length;
+        const compression = ((1 - CanL3Size / jsonSize) * 100).toFixed(1);
+
+        output.innerHTML = `<span class="success">âœ… IIFE Test Passed!</span>
+
+Input Data:
+${JSON.stringify(data, null, 2)}
+
+CanL3 Output (Smart Encoding):
+${CanL3}
+
+Round-trip Match: ${match ? '<span class="success">âœ… YES</span>' : '<span class="error">âŒ NO</span>'}
+
+Stats:
+- JSON Size: ${jsonSize} bytes
+- CanL3 Size: ${CanL3Size} bytes
+- Compression: ${compression}%
+
+Bundle Format: IIFE (4.45 KB gzipped)`;
+      } catch (error) {
+        output.innerHTML = `<span class="error">âŒ IIFE Test Failed: ${error.message}</span>`;
+      }
+    };
+  </script>
+</body>
+</html>
+
+

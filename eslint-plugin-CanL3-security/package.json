@@ -1,0 +1,25 @@
+﻿{
+  "name": "eslint-plugin-CanL3-security",
+  "version": "1.0.0",
+  "description": "Custom ESLint rules for CanL3 security patterns",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "security",
+    "prototype-pollution",
+    "redos",
+    "CanL3"
+  ],
+  "author": "CanL3 Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "eslint": ">=8.0.0"
+  }
+}
+

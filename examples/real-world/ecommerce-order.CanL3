@@ -1,0 +1,53 @@
+﻿@CanL3 v1
+
+# E-commerce order with nested items and customer data
+order{orderId,status,placedAt}:
+  orderId: ORD-2025-11-001234
+  status: processing
+  placedAt: 2025-11-03T14:30:00Z
+
+customer{id:u32,name,email,tier}:
+  id: 5678
+  name: "John Smith"
+  email: john.smith@example.com
+  tier: premium
+
+items[3]{sku,name,quantity:u32,unitPrice:f64,discount:f64}:
+  WIDGET-001,"Premium Widget",2,29.99,0.10
+  GADGET-042,"Smart Gadget Pro",1,149.99,0.00
+  ACCESSORY-123,"Universal Adapter",3,12.99,0.15
+
+shippingAddress{street,city,state,zip,country}:
+  street: "123 Main Street, Apt 4B"
+  city: "San Francisco"
+  state: CA
+  zip: "94105"
+  country: USA
+
+billingAddress{street,city,state,zip,country}:
+  street: "123 Main Street, Apt 4B"
+  city: "San Francisco"
+  state: CA
+  zip: "94105"
+  country: USA
+
+payment{method,last4,brand,status}:
+  method: credit_card
+  last4: "4242"
+  brand: Visa
+  status: authorized
+
+summary{subtotal:f64,tax:f64,shipping:f64,discount:f64,total:f64}:
+  subtotal: 248.93
+  tax: 21.16
+  shipping: 9.99
+  discount: 13.45
+  total: 266.63
+
+tracking{carrier,trackingNumber,estimatedDelivery}:
+  carrier: UPS
+  trackingNumber: "1Z999AA10123456784"
+  estimatedDelivery: 2025-11-06T18:00:00Z
+
+notes[2]: "Gift wrap requested", "Leave package at front door"
+

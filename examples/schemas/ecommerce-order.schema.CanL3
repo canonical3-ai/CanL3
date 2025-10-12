@@ -1,0 +1,55 @@
+@schema v1
+@strict true
+@description "E-commerce order schema with full validation"
+
+Address: obj
+  street: str required min:5 max:200
+  city: str required min:2 max:100
+  state: str required length:2 pattern:^[A-Z]{2}$
+  zip: str required pattern:^\d{5}(-\d{4})?$
+  country: str required length:3 pattern:^[A-Z]{3}$
+
+OrderItem: obj
+  sku: str required pattern:^[A-Z]+-\d+$
+  name: str required min:3 max:200
+  quantity: u32 required min:1 max:100
+  unitPrice: f64 required min:0.01 multipleOf:0.01
+  discount: f64 required min:0 max:1
+
+Customer: obj
+  id: u32 required
+  name: str required min:2 max:100
+  email: str required pattern:email
+  tier: str required pattern:^(standard|premium|vip)$
+
+Payment: obj
+  method: str required pattern:^(credit_card|debit_card|paypal|crypto)$
+  last4: str required length:4 pattern:^\d{4}$
+  brand: str required
+  status: str required pattern:^(pending|authorized|captured|failed)$
+
+OrderSummary: obj
+  subtotal: f64 required min:0 multipleOf:0.01
+  tax: f64 required min:0 multipleOf:0.01
+  shipping: f64 required min:0 multipleOf:0.01
+  discount: f64 required min:0 multipleOf:0.01
+  total: f64 required min:0 multipleOf:0.01
+
+Tracking: obj
+  carrier: str required
+  trackingNumber: str required min:10 max:50
+  estimatedDelivery: str required pattern:date
+
+order: obj required
+  orderId: str required pattern:^ORD-\d{4}-\d{2}-\d{6}$
+  status: str required pattern:^(pending|processing|shipped|delivered|cancelled)$
+  placedAt: str required pattern:date
+
+customer: Customer required
+items: list<OrderItem> required min:1 max:50
+shippingAddress: Address required
+billingAddress: Address required
+payment: Payment required
+summary: OrderSummary required
+tracking: Tracking?
+notes: list<str>? max:10

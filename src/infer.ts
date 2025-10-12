@@ -1,0 +1,277 @@
+﻿/**
+ * Type inference utilities for CanL3
+ */
+
+import type { CanL3TypeHint, CanL3Value, CanL3Object, CanL3Array } from "./types.js";
+
+/**
+ * Infer the CanL3 type hint for a JavaScript value
+ */
+export function inferPrimitiveType(value: unknown): CanL3TypeHint {
+  if (value === null || value === undefined) {
+    return "null";
+  }
+
+  if (typeof value === "boolean") {
+    return "bool";
+  }
+
+  if (typeof value === "number") {
+    // Handle special values
+    if (!isFinite(value)) {
+      return "f64";
+    }
+
+    if (Number.isInteger(value)) {
+      // Check bounds for integer types
+      if (value >= 0 && value <= 0xFFFFFFFF) {
+        return "u32";
+      } else if (value >= -0x80000000 && value <= 0x7FFFFFFF) {
+        return "i32";
+      } else {
+        // Integer outside i32/u32 range, use f64
+        return "f64";
+      }
+    }
+    return "f64";
+  }
+
+  if (typeof value === "string") {
+    return "str";
+  }
+
+  if (Array.isArray(value)) {
+    return "list";
+  }
+
+  if (typeof value === "object") {
+    return "obj";
+  }
+
+  // Fallback to string for unknown types
+  return "str";
+}
+
+/**
+ * Coerce a string value to the specified CanL3 type
+ */
+export function coerceValue(value: string, type: CanL3TypeHint): any {
+  const unquoted = value.startsWith('"') ? value.slice(1, -1).replace(/""/g, '"') : value;
+
+  // Handle null values for all types
+  if (unquoted === "null") {
+    return null;
+  }
+
+  switch (type) {
+    case "null":
+      return null;
+    case "bool":
+      return unquoted === "true";
+    case "u32":
+      // SECURITY FIX (BF010): Strict validation - must be decimal integer only
+      // BUG-011 FIX: Enhanced error messages for common notation mistakes
+      if (!/^[0-9]+$/.test(unquoted)) {
+        if (/^0[xX]/.test(unquoted)) {
+          throw new TypeError(`Invalid u32: hexadecimal notation not supported, use decimal instead: ${unquoted}`);
+        }
+        if (/^0[oO]/.test(unquoted)) {
+          throw new TypeError(`Invalid u32: octal notation not supported, use decimal instead: ${unquoted}`);
+        }
+        if (/^0[bB]/.test(unquoted)) {
+          throw new TypeError(`Invalid u32: binary notation not supported, use decimal instead: ${unquoted}`);
+        }
+        if (/[eE]/.test(unquoted)) {
+          throw new TypeError(`Invalid u32: scientific notation not supported for integers: ${unquoted}`);
+        }
+        throw new TypeError(`Invalid u32: must be decimal integer only, got: ${unquoted}`);
+      }
+      const u32 = parseInt(unquoted, 10);
+      if (!Number.isFinite(u32) || u32 < 0 || u32 > 0xFFFFFFFF) {
+        throw new RangeError(`Invalid u32: out of range (0-4294967295): ${u32}`);
+      }
+      // SECURITY FIX (BF010): Verify no overflow occurred
+      if (u32.toString() !== unquoted) {
+        throw new RangeError(`Invalid u32: overflow detected: ${unquoted}`);
+      }
+      return u32;
+    case "i32":
+      // SECURITY FIX (BF010): Strict validation
+      // BUG-011 FIX: Enhanced error messages for common notation mistakes
+      if (!/^-?[0-9]+$/.test(unquoted)) {
+        if (/^0[xX]/.test(unquoted)) {
+          throw new TypeError(`Invalid i32: hexadecimal notation not supported, use decimal instead: ${unquoted}`);
+        }
+        if (/^0[oO]/.test(unquoted)) {
+          throw new TypeError(`Invalid i32: octal notation not supported, use decimal instead: ${unquoted}`);
+        }
+        if (/^0[bB]/.test(unquoted)) {
+          throw new TypeError(`Invalid i32: binary notation not supported, use decimal instead: ${unquoted}`);
+        }
+        if (/[eE]/.test(unquoted)) {
+          throw new TypeError(`Invalid i32: scientific notation not supported for integers: ${unquoted}`);
+        }
+        throw new TypeError(`Invalid i32: must be decimal integer only, got: ${unquoted}`);
+      }
+      const i32 = parseInt(unquoted, 10);
+      if (!Number.isFinite(i32) || i32 < -0x80000000 || i32 > 0x7FFFFFFF) {
+        throw new RangeError(`Invalid i32: out of range (-2147483648 to 2147483647): ${i32}`);
+      }
+      // BUGFIX: Direct comparison like u32, not replace(/^-/, '-') which is a no-op
+      if (i32.toString() !== unquoted) {
+        throw new RangeError(`Invalid i32: overflow detected: ${unquoted}`);
+      }
+      return i32;
+    case "f64":
+      // SECURITY FIX (BF010): Reject NaN and Infinity
+      // BUG-011 FIX: Enhanced validation for floating point edge cases
+      const f64 = parseFloat(unquoted);
+      if (!Number.isFinite(f64)) {
+        throw new RangeError(`Invalid f64: NaN or Infinity not allowed: ${value}`);
+      }
+      // BUG-011 FIX: Detect potential scientific notation precision issues
+      if (/\d*[eE][+-]?\d+/.test(unquoted) && !Number.isSafeInteger(f64) && f64 !== 0) {
+        // For very large/small scientific notation values, warn about precision
+        const absVal = Math.abs(f64);
+        if (absVal > Number.MAX_SAFE_INTEGER || (absVal < 1 && absVal < Number.EPSILON)) {
+          throw new RangeError(`Invalid f64: scientific notation precision loss detected: ${unquoted}`);
+        }
+      }
+      return f64;
+    case "str":
+      return unquoted;
+    default:
+      return unquoted;
+  }
+}
+
+/**
+ * Check if an array is uniform (all objects have same keys)
+ */
+export function isUniformObjectArray(arr: any[]): boolean {
+  if (arr.length === 0) return true;
+  if (!arr.every(item => typeof item === "object" && item !== null && !Array.isArray(item))) {
+    return false;
+  }
+
+  const firstKeys = Object.keys(arr[0]).sort();
+  return arr.every(item => {
+    const keys = Object.keys(item).sort();
+    return keys.length === firstKeys.length &&
+           keys.every((key, index) => key === firstKeys[index]);
+  });
+}
+
+/**
+ * Get stable column order for uniform object array
+ */
+export function getUniformColumns(arr: any[]): string[] {
+  if (arr.length === 0) return [];
+  return Object.keys(arr[0]).sort();
+}
+
+/**
+ * Check if an array is semi-uniform (objects share a significant percentage of keys)
+ * This allows for optional fields while still using tabular format
+ */
+export function isSemiUniformObjectArray(arr: any[], threshold: number = 0.7): boolean {
+  if (arr.length === 0) return true;
+  if (!arr.every(item => typeof item === "object" && item !== null && !Array.isArray(item))) {
+    return false;
+  }
+
+  // Collect all unique keys across all objects
+  const allKeysSet = new Set<string>();
+  for (const item of arr) {
+    Object.keys(item).forEach(key => allKeysSet.add(key));
+  }
+  const allKeys = Array.from(allKeysSet);
+
+  // Calculate how many objects contain each key
+  const keyFrequency = new Map<string, number>();
+  for (const key of allKeys) {
+    let count = 0;
+    for (const item of arr) {
+      if (key in item) count++;
+    }
+    keyFrequency.set(key, count);
+  }
+
+  // Check if at least `threshold` percent of keys are present in most objects
+  const commonKeyCount = Array.from(keyFrequency.values()).filter(
+    freq => freq >= arr.length * threshold
+  ).length;
+
+  return commonKeyCount >= allKeys.length * threshold;
+}
+
+/**
+ * Get all columns (union of all keys) from an array of objects
+ * Returns keys in sorted order for stability
+ */
+export function getAllColumns(arr: any[]): string[] {
+  if (arr.length === 0) return [];
+
+  const allKeysSet = new Set<string>();
+  for (const item of arr) {
+    if (item && typeof item === "object" && !Array.isArray(item)) {
+      Object.keys(item).forEach(key => allKeysSet.add(key));
+    }
+  }
+
+  return Array.from(allKeysSet).sort();
+}
+
+/**
+ * Try to infer type from string value (when no type hint provided)
+ */
+export function inferTypeFromString(value: string): CanL3TypeHint {
+  const trimmed = value.trim();
+
+  // Handle quoted values as strings
+  if (value.startsWith('"') && value.endsWith('"')) {
+    return "str";
+  }
+
+  // Handle null values
+  if (trimmed === "null" || trimmed === "") {
+    return "null";
+  }
+
+  // Handle boolean values
+  if (trimmed === "true" || trimmed === "false") {
+    return "bool";
+  }
+
+  // Handle numeric values
+  if (/^-?\d+$/.test(trimmed)) {
+    const num = parseInt(trimmed, 10);
+
+    // BUGFIX: Check bounds like inferPrimitiveType does
+    // Large integers beyond safe integer range should be f64
+    if (!Number.isSafeInteger(num)) {
+      return "f64";
+    }
+
+    // Check u32 bounds (0 to 4294967295)
+    if (num >= 0 && num <= 0xFFFFFFFF) {
+      return "u32";
+    }
+
+    // Check i32 bounds (-2147483648 to 2147483647)
+    if (num >= -0x80000000 && num <= 0x7FFFFFFF) {
+      return "i32";
+    }
+
+    // Outside both ranges, use f64
+    return "f64";
+  }
+
+  if (/^-?\d*\.\d+$/.test(trimmed)) {
+    return "f64";
+  }
+
+  // Default to string
+  return "str";
+}
+

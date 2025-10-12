@@ -1,0 +1,217 @@
+{
+  "companyDatabase": {
+    "organizationInfo": {
+      "companyName": "GlobalTech Solutions International Inc.",
+      "registrationNumber": "REG-2015-US-12345",
+      "taxId": "TAX-US-67890",
+      "founded": "2015-03-15",
+      "legalEntity": "C-Corporation",
+      "headquarters": {
+        "country": "United States",
+        "city": "San Francisco",
+        "fullAddress": "123 Technology Boulevard, Suite 500, San Francisco, CA 94105, USA"
+      }
+    },
+    "employees": [
+      {
+        "employeeId": "EMP-0001",
+        "personalInfo": {
+          "firstName": "Alice",
+          "middleName": "Marie",
+          "lastName": "Anderson",
+          "dateOfBirth": "1990-05-15",
+          "nationality": "American",
+          "ssn": "***-**-1234"
+        },
+        "contactInfo": {
+          "email": "alice.anderson@globaltech.com",
+          "personalEmail": "alice.m.anderson@gmail.com",
+          "phone": {
+            "work": "+1-415-555-1001",
+            "mobile": "+1-415-555-2001",
+            "emergency": "+1-415-555-3001"
+          },
+          "address": {
+            "street": "456 Residential Street",
+            "apt": "Apt 12B",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94110",
+            "country": "USA"
+          }
+        },
+        "employment": {
+          "department": "Engineering",
+          "position": "Senior Software Engineer",
+          "level": "L6",
+          "employmentType": "Full-time",
+          "hireDate": "2018-03-15",
+          "startDate": "2018-04-01",
+          "probationEndDate": "2018-07-01",
+          "location": "San Francisco Office",
+          "remote": false,
+          "managerId": "EMP-M001"
+        },
+        "compensation": {
+          "baseSalary": 145000,
+          "currency": "USD",
+          "paySchedule": "bi-weekly",
+          "bonusEligible": true,
+          "targetBonus": 20,
+          "stockOptions": {
+            "granted": 10000,
+            "vested": 6250,
+            "vestingSchedule": "4-year with 1-year cliff"
+          },
+          "benefits": {
+            "healthInsurance": "Premium PPO",
+            "dentalInsurance": "Full coverage",
+            "visionInsurance": "Basic",
+            "retirement401k": {
+              "contribution": 6,
+              "employerMatch": 4,
+              "vestingSchedule": "immediate"
+            },
+            "paidTimeOff": {
+              "vacation": 20,
+              "sick": 10,
+              "personal": 5
+            }
+          }
+        },
+        "skills": ["JavaScript", "TypeScript", "React", "Node.js", "PostgreSQL", "AWS", "Docker", "Kubernetes", "Python"],
+        "certifications": [
+          {
+            "name": "AWS Solutions Architect Professional",
+            "issuer": "Amazon Web Services",
+            "issueDate": "2023-06-15",
+            "expiryDate": "2026-06-15",
+            "credentialId": "AWS-CERT-12345"
+          },
+          {
+            "name": "Kubernetes Administrator (CKA)",
+            "issuer": "Cloud Native Computing Foundation",
+            "issueDate": "2025-01-20",
+            "expiryDate": "2027-01-20",
+            "credentialId": "CKA-CERT-67890"
+          }
+        ],
+        "projects": [
+          {
+            "projectId": "PROJ-ALPHA",
+            "role": "Technical Lead",
+            "startDate": "2025-01-15",
+            "endDate": null,
+            "status": "active",
+            "allocation": 100
+          },
+          {
+            "projectId": "PROJ-BETA",
+            "role": "Senior Developer",
+            "startDate": "2023-06-01",
+            "endDate": "2025-01-10",
+            "status": "completed",
+            "allocation": 50
+          }
+        ],
+        "performance": {
+          "currentRating": 4.8,
+          "lastReviewDate": "2025-10-01",
+          "nextReviewDate": "2026-04-01",
+          "goals": [
+            {
+              "goalId": "GOAL-001",
+              "description": "Lead Project Alpha to successful completion",
+              "dueDate": "2025-12-31",
+              "status": "on-track",
+              "progress": 75
+            },
+            {
+              "goalId": "GOAL-002",
+              "description": "Mentor 3 junior engineers",
+              "dueDate": "2025-12-31",
+              "status": "ahead",
+              "progress": 90
+            }
+          ],
+          "achievements": [
+            "Shipped critical feature 2 weeks ahead of schedule",
+            "Reduced API response time by 40%",
+            "Mentored 5 engineers successfully"
+          ]
+        },
+        "directReports": ["EMP-0015", "EMP-0023", "EMP-0034"],
+        "reportsTo": "EMP-M001"
+      },
+      {
+        "employeeId": "EMP-0002",
+        "personalInfo": {
+          "firstName": "Bob",
+          "middleName": "James",
+          "lastName": "Brown",
+          "dateOfBirth": "1988-09-22",
+          "nationality": "American"
+        },
+        "contactInfo": {
+          "email": "bob.brown@globaltech.com",
+          "phone": {
+            "work": "+1-206-555-1002",
+            "mobile": "+1-206-555-2002"
+          }
+        },
+        "employment": {
+          "department": "Engineering",
+          "position": "Staff Software Engineer",
+          "level": "L7",
+          "employmentType": "Full-time",
+          "hireDate": "2016-01-10",
+          "location": "Seattle Office"
+        },
+        "compensation": {
+          "baseSalary": 175000,
+          "currency": "USD"
+        },
+        "skills": ["Python", "Go", "Rust", "Kubernetes", "PostgreSQL", "Redis", "Kafka", "System Design"],
+        "performance": {
+          "currentRating": 4.9,
+          "lastReviewDate": "2025-09-15"
+        },
+        "directReports": ["EMP-0012", "EMP-0019"]
+      },
+      {
+        "employeeId": "EMP-0003",
+        "personalInfo": {
+          "firstName": "Carol",
+          "lastName": "Chen",
+          "dateOfBirth": "1992-12-08",
+          "nationality": "American"
+        },
+        "contactInfo": {
+          "email": "carol.chen@globaltech.com",
+          "phone": {
+            "work": "+1-212-555-1003",
+            "mobile": "+1-212-555-2003"
+          }
+        },
+        "employment": {
+          "department": "Product Management",
+          "position": "Senior Product Manager",
+          "level": "L5",
+          "employmentType": "Full-time",
+          "hireDate": "2019-07-20",
+          "location": "New York Office"
+        },
+        "compensation": {
+          "baseSalary": 135000,
+          "currency": "USD"
+        },
+        "skills": ["Product Strategy", "User Research", "Analytics", "Roadmapping", "Agile", "Stakeholder Management"],
+        "performance": {
+          "currentRating": 4.7,
+          "lastReviewDate": "2025-10-10"
+        },
+        "directReports": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "logs": [
+    {
+      "timestamp": "2025-11-04T10:15:30.123Z",
+      "level": "info",
+      "service": "api-gateway",
+      "message": "Request processed successfully",
+      "requestId": "req_abc123def456",
+      "userId": "user_789",
+      "endpoint": "/api/v1/users",
+      "method": "GET",
+      "statusCode": 200,
+      "responseTime": 45,
+      "ip": "192.168.1.100",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    },
+    {
+      "timestamp": "2025-11-04T10:16:45.456Z",
+      "level": "warn",
+      "service": "database",
+      "message": "Slow query detected",
+      "query": "SELECT * FROM users WHERE created > DATE_SUB(NOW(), INTERVAL 30 DAY)",
+      "duration": 1250,
+      "threshold": 1000,
+      "database": "primary",
+      "rowsAffected": 5678
+    },
+    {
+      "timestamp": "2025-11-04T10:17:00.789Z",
+      "level": "error",
+      "service": "payment-processor",
+      "message": "Payment processing failed",
+      "errorCode": "CARD_DECLINED",
+      "errorDetails": "Insufficient funds",
+      "orderId": "ord_789xyz123",
+      "amount": 99.99,
+      "currency": "USD",
+      "customerId": "cust_456",
+      "retryable": true,
+      "attemptNumber": 1
+    },
+    {
+      "timestamp": "2025-11-04T10:18:15.234Z",
+      "level": "info",
+      "service": "cache",
+      "message": "Cache miss - fetching from database",
+      "key": "user:profile:123456",
+      "ttl": 3600,
+      "fallback": "database-query",
+      "queryTime": 23
+    },
+    {
+      "timestamp": "2025-11-04T10:19:30.567Z",
+      "level": "info",
+      "service": "authentication",
+      "message": "User login successful",
+      "userId": "user_789",
+      "username": "alice_smith",
+      "loginMethod": "oauth2",
+      "provider": "google",
+      "ipAddress": "203.0.113.42",
+      "country": "US",
+      "city": "San Francisco",
+      "twoFactorUsed": true
+    }
+  ]
+}

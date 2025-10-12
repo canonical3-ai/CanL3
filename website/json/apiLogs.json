@@ -1,0 +1,40 @@
+{
+  "service": "api-gateway-prod",
+  "region": "us-west-2",
+  "timeRange": "2025-11-04 12:00:00 - 12:15:00 UTC",
+  "logs": [
+    {"timestamp": "2025-11-04T12:00:12.234Z", "level": "INFO", "method": "GET", "path": "/api/v1/users/1234", "status": 200, "duration": 45, "ip": "192.168.1.100", "userAgent": "Mozilla/5.0", "userId": "user_1234", "requestId": "req_abc123"},
+    {"timestamp": "2025-11-04T12:00:15.567Z", "level": "INFO", "method": "POST", "path": "/api/v1/orders", "status": 201, "duration": 234, "ip": "192.168.1.101", "userAgent": "Mobile/iOS", "userId": "user_5678", "requestId": "req_abc124"},
+    {"timestamp": "2025-11-04T12:00:18.890Z", "level": "WARN", "method": "GET", "path": "/api/v1/products/999", "status": 404, "duration": 12, "ip": "192.168.1.102", "userAgent": "curl/7.68.0", "userId": null, "requestId": "req_abc125"},
+    {"timestamp": "2025-11-04T12:00:23.123Z", "level": "ERROR", "method": "POST", "path": "/api/v1/payment", "status": 500, "duration": 5234, "ip": "192.168.1.103", "userAgent": "PostmanRuntime", "userId": "user_9012", "requestId": "req_abc126", "error": "Database timeout"},
+    {"timestamp": "2025-11-04T12:00:28.456Z", "level": "INFO", "method": "GET", "path": "/api/v1/search", "status": 200, "duration": 89, "ip": "192.168.1.104", "userAgent": "Mozilla/5.0", "userId": "user_3456", "requestId": "req_abc127", "query": "laptop"},
+    {"timestamp": "2025-11-04T12:00:32.789Z", "level": "INFO", "method": "PUT", "path": "/api/v1/users/1234/profile", "status": 200, "duration": 123, "ip": "192.168.1.100", "userAgent": "Mozilla/5.0", "userId": "user_1234", "requestId": "req_abc128"},
+    {"timestamp": "2025-11-04T12:00:38.012Z", "level": "INFO", "method": "DELETE", "path": "/api/v1/cart/items/789", "status": 204, "duration": 56, "ip": "192.168.1.105", "userAgent": "Mobile/Android", "userId": "user_7890", "requestId": "req_abc129"},
+    {"timestamp": "2025-11-04T12:00:42.345Z", "level": "INFO", "method": "GET", "path": "/api/v1/recommendations", "status": 200, "duration": 456, "ip": "192.168.1.106", "userAgent": "Mozilla/5.0", "userId": "user_2345", "requestId": "req_abc130"},
+    {"timestamp": "2025-11-04T12:00:47.678Z", "level": "WARN", "method": "POST", "path": "/api/v1/login", "status": 401, "duration": 34, "ip": "192.168.1.107", "userAgent": "curl/7.68.0", "userId": null, "requestId": "req_abc131", "reason": "Invalid credentials"},
+    {"timestamp": "2025-11-04T12:00:52.901Z", "level": "INFO", "method": "GET", "path": "/api/v1/analytics/dashboard", "status": 200, "duration": 678, "ip": "192.168.1.108", "userAgent": "Mozilla/5.0", "userId": "user_admin", "requestId": "req_abc132"},
+    {"timestamp": "2025-11-04T12:01:01.234Z", "level": "INFO", "method": "GET", "path": "/api/v1/users/5678", "status": 200, "duration": 38, "ip": "192.168.1.109", "userAgent": "Mozilla/5.0", "userId": "user_5678", "requestId": "req_abc133"},
+    {"timestamp": "2025-11-04T12:01:05.567Z", "level": "INFO", "method": "POST", "path": "/api/v1/reviews", "status": 201, "duration": 189, "ip": "192.168.1.110", "userAgent": "Mobile/iOS", "userId": "user_6789", "requestId": "req_abc134"},
+    {"timestamp": "2025-11-04T12:01:10.890Z", "level": "INFO", "method": "GET", "path": "/api/v1/orders/history", "status": 200, "duration": 234, "ip": "192.168.1.111", "userAgent": "Mozilla/5.0", "userId": "user_1234", "requestId": "req_abc135"},
+    {"timestamp": "2025-11-04T12:01:16.123Z", "level": "ERROR", "method": "POST", "path": "/api/v1/checkout", "status": 503, "duration": 30001, "ip": "192.168.1.112", "userAgent": "Mobile/Android", "userId": "user_8901", "requestId": "req_abc136", "error": "Payment gateway timeout"},
+    {"timestamp": "2025-11-04T12:01:22.456Z", "level": "INFO", "method": "GET", "path": "/api/v1/inventory", "status": 200, "duration": 123, "ip": "192.168.1.113", "userAgent": "Python/3.9", "userId": "service_inventory", "requestId": "req_abc137"},
+    {"timestamp": "2025-11-04T12:01:28.789Z", "level": "INFO", "method": "PATCH", "path": "/api/v1/settings", "status": 200, "duration": 67, "ip": "192.168.1.114", "userAgent": "Mozilla/5.0", "userId": "user_admin", "requestId": "req_abc138"},
+    {"timestamp": "2025-11-04T12:01:34.012Z", "level": "INFO", "method": "GET", "path": "/health", "status": 200, "duration": 3, "ip": "10.0.0.5", "userAgent": "ELB-HealthChecker", "userId": null, "requestId": "req_abc139"},
+    {"timestamp": "2025-11-04T12:01:40.345Z", "level": "INFO", "method": "GET", "path": "/metrics", "status": 200, "duration": 8, "ip": "10.0.0.6", "userAgent": "Prometheus", "userId": null, "requestId": "req_abc140"},
+    {"timestamp": "2025-11-04T12:01:46.678Z", "level": "INFO", "method": "POST", "path": "/api/v1/webhooks/stripe", "status": 200, "duration": 456, "ip": "54.187.123.45", "userAgent": "Stripe/1.0", "userId": null, "requestId": "req_abc141"},
+    {"timestamp": "2025-11-04T12:01:52.901Z", "level": "INFO", "method": "GET", "path": "/api/v1/users/search", "status": 200, "duration": 234, "ip": "192.168.1.115", "userAgent": "Mozilla/5.0", "userId": "user_admin", "requestId": "req_abc142", "results": 45}
+  ],
+  "metrics": {
+    "totalRequests": 20,
+    "successRate": 85.0,
+    "avgDuration": 2045,
+    "p50Duration": 123,
+    "p95Duration": 5234,
+    "p99Duration": 30001,
+    "errorCount": 2,
+    "warnCount": 2,
+    "uniqueUsers": 12,
+    "uniqueIPs": 16,
+    "topEndpoints": ["/api/v1/users", "/api/v1/orders", "/api/v1/search"]
+  }
+}

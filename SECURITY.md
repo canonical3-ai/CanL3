@@ -1,0 +1,376 @@
+﻿# Security Policy
+
+## ðŸ“‹ Table of Contents
+- [Reporting a Vulnerability](#reporting-a-vulnerability)
+- [Security Features](#security-features)
+- [Known Security Considerations](#known-security-considerations)
+- [Best Practices](#best-practices)
+- [Security Changelog](#security-changelog)
+- [Security Testing](#security-testing)
+- [Resources](#security-resources)
+- [Contact](#contact)
+
+---
+
+## ðŸš¨ Reporting a Vulnerability
+
+If you discover a security vulnerability in CanL3, please report it by creating a private security advisory on GitHub or by emailing the maintainers directly.
+
+**âš ï¸ Important**: Please do NOT create public GitHub issues for security vulnerabilities.
+
+**Our Response:**
+- ðŸ• **48 hours** - Initial response to security reports
+- ðŸš€ **7 days** - Target for publishing critical fixes
+- ðŸ”’ **Private disclosure** - Coordinated security updates
+
+---
+
+## Security Features
+
+### ReDoS Protection (v1.0.3+)
+
+CanL3 includes built-in protection against Regular Expression Denial of Service (ReDoS) attacks in query filter expressions.
+
+**Protected Operations:**
+- `matches` operator: `users[?(@.email matches "pattern")]`
+- `matches()` function expressions
+- All regex-based filtering
+
+**Protection Mechanisms:**
+
+1. **Pattern Validation**: Regex patterns are validated before compilation
+   - Detects nested quantifiers: `(a+)+`, `(a*)*`, `(a+)*`
+   - Rejects patterns > 100 characters
+   - Limits nesting depth
+   - Blocks dangerous constructs
+
+2. **Execution Timeout**: Regex execution limited to 100ms
+   - Prevents catastrophic backtracking
+   - Fails fast on complex patterns
+
+3. **SecurityError**: Unsafe patterns throw `SecurityError`
+   - Distinguishable from normal errors
+   - Includes security event logging
+
+### Safe Regex Usage Guidelines
+
+#### âœ… SAFE Patterns
+
+```javascript
+// Simple quantifiers (no nesting)
+".*@.*"           // Email basic check
+"^[a-z]+$"        // Lowercase only
+"\\d{3}-\\d{4}"   // Phone format
+"https?://"       // URL protocol
+
+// Character classes
+"[a-zA-Z0-9]+"    // Alphanumeric
+"[^@]+@[^@]+"     // Simple email
+```
+
+#### âŒ UNSAFE Patterns
+
+```javascript
+// Nested quantifiers - BLOCKED
+"(a+)+"           // ReDoS: O(2^n)
+"(a*)*"           // ReDoS: exponential
+"(a+)*"           // ReDoS: catastrophic backtracking
+"(a|a)*"          // Overlapping alternatives
+
+// Excessive complexity - BLOCKED
+"([a-zA-Z]+)*$"   // Character class with nested quantifier
+"(\\w+|\\d+)*@"   // Alternative repetition
+```
+
+#### Pattern Limits
+
+- **Max Length**: 100 characters (configurable)
+- **Max Nesting**: 3 levels (configurable)
+- **Timeout**: 100ms (configurable)
+- **Backreferences**: Disabled by default
+- **Lookarounds**: Disabled by default
+
+### Configuration
+
+You can customize regex security settings:
+
+```javascript
+import { RegexExecutor } from 'CanL3';
+
+// Custom validation options
+RegexExecutor.test(pattern, input, {
+  timeout: 200, // Increase timeout to 200ms
+  validationOptions: {
+    maxLength: 150,        // Allow longer patterns
+    maxNestingDepth: 5,    // Allow deeper nesting
+    allowBackreferences: true,  // Enable backreferences
+  }
+});
+```
+
+**Warning**: Relaxing these limits increases ReDoS risk!
+
+---
+
+## âš ï¸ Known Security Considerations
+
+### 1. User-Supplied Regex Patterns
+
+**Risk**: If your application allows users to supply regex patterns for filtering, they could attempt ReDoS attacks.
+
+**Mitigation**:
+- CanL3 validates and limits all regex patterns
+- SecurityError is thrown for unsafe patterns
+- Consider additional rate limiting in your application
+
+### 2. Large Documents
+
+**Risk**: Very large documents (>10MB) may consume significant memory.
+
+**Mitigation**:
+- Use streaming API for large files
+- Set document size limits in your application
+- Monitor memory usage
+
+### 3. Query Complexity
+
+**Risk**: Deeply nested queries with wildcards can be slow.
+
+**Mitigation**:
+- Query evaluator has depth limits (default: 100)
+- Consider query complexity budgets in your application
+- Use indexing for frequently-queried paths
+
+### 4. Path Traversal (v1.0.3+)
+
+**Risk**: CLI file operations could be exploited to read/write arbitrary files.
+
+**Mitigation** (v1.0.3+):
+- All file paths validated before use
+- Directory traversal (../) blocked
+- Absolute paths must be within working directory
+- Symlinks rejected by default
+- Windows-specific protections (UNC paths, reserved names)
+
+**Protected Operations:**
+- All CLI file reads (`CanL3 encode`, `CanL3 decode`, etc.)
+- All CLI file writes (`--out` parameter)
+- Schema file loading (`--schema` parameter)
+
+**Path Validation Rules:**
+```typescript
+// âœ… ALLOWED - Relative paths within working directory
+CanL3 encode data.json
+CanL3 encode subdir/file.json
+CanL3 encode ./file.json
+
+// âŒ BLOCKED - Directory traversal
+CanL3 encode ../../../etc/passwd
+CanL3 encode subdir/../../etc/passwd
+
+// âŒ BLOCKED - Absolute paths outside working directory
+CanL3 encode /etc/passwd
+CanL3 encode C:\Windows\System32\config
+
+// âŒ BLOCKED - Symlinks
+CanL3 encode link-to-sensitive-file.txt
+
+// âŒ BLOCKED - Windows reserved names
+CanL3 encode CON
+CanL3 encode \\server\share\file
+
+// âœ… ALLOWED - Absolute paths WITHIN working directory
+// (for programmatic use, all paths resolved to allowed dir)
+```
+
+**Security Guarantees:**
+- All file operations restricted to current working directory (and subdirectories)
+- Path traversal sequences normalized and validated
+- Symlinks detected and blocked (unless explicitly allowed)
+- Null bytes rejected
+- Windows device names blocked
+- Error messages don't leak sensitive paths
+
+---
+
+## ðŸ“… Security Changelog
+
+### v1.0.3 (2025-11-05) - Security Release
+
+**[CRITICAL] BF001: ReDoS Vulnerability Fixed**
+- **Issue**: Filter evaluator compiled user-supplied regex without validation
+- **Impact**: Remote DoS via malicious patterns like `(a+)+`
+- **Fix**: Added `RegexValidator` and `RegexExecutor` with timeout
+- **Files Changed**:
+  - `src/query/regex-validator.ts` (new)
+  - `src/query/regex-executor.ts` (new)
+  - `src/query/filter-evaluator.ts` (updated)
+  - `src/query/evaluator.ts` (updated)
+  - `src/errors/index.ts` (added SecurityError)
+- **CWE**: CWE-1333 (Inefficient Regular Expression Complexity)
+- **Credit**: Internal security audit
+
+**[CRITICAL] BF002: Path Traversal Fixed**
+- **Issue**: CLI accepted unsanitized file paths
+- **Impact**: Arbitrary file read/write via path traversal or absolute paths
+- **Fix**: Added `PathValidator` with comprehensive path sanitization
+- **Files Changed**:
+  - `src/cli/path-validator.ts` (new)
+  - `src/cli.ts` (all file operations secured with safeReadFile/safeWriteFile)
+- **CWE**: CWE-22 (Improper Limitation of a Pathname to a Restricted Directory)
+- **Credit**: Internal security audit
+
+**[CRITICAL] BF003: Buffer Overflow Fixed**
+- **Issue**: Stream decoder checked buffer size AFTER appending chunks
+- **Impact**: Memory exhaustion DoS via cumulative chunk overflow
+- **Fix**: Moved buffer size check to BEFORE chunk append
+- **Files Changed**:
+  - `src/stream/decode-stream.ts` (1 line fix: check before append)
+- **CWE**: CWE-120 (Buffer Copy without Checking Size of Input)
+- **Credit**: Internal security audit
+
+**[CRITICAL] BF004: Prototype Pollution Fixed**
+- **Issue**: Query evaluator and setter allowed access to `__proto__`, `constructor`, `prototype`
+- **Impact**: Potential RCE via prototype pollution, authentication bypass, privilege escalation
+- **Fix**: Added dangerous property blacklist and hasOwnProperty checks
+- **Files Changed**:
+  - `src/query/evaluator.ts` (add property protection, hasOwnProperty check)
+  - `src/modification/setter.ts` (block dangerous properties in set operations)
+- **Protected Properties**: `__proto__`, `constructor`, `prototype`, `__defineGetter__`, `__defineSetter__`, `__lookupGetter__`, `__lookupSetter__`
+- **CWE**: CWE-1321 (Improperly Controlled Modification of Object Prototype Attributes)
+- **Credit**: Internal security audit
+
+**[HIGH] BF005: Command Injection Risk Fixed**
+- **Issue**: CLI query command accepted unsanitized query expressions
+- **Impact**: Potential code injection via malicious query strings, log injection, DoS
+- **Fix**: Added `QuerySanitizer` with comprehensive validation
+- **Files Changed**:
+  - `src/cli/query-sanitizer.ts` (new)
+  - `src/cli.ts` (sanitize queries before execution)
+- **Protections**:
+  - Block dangerous patterns: `require()`, `eval()`, `exec()`, `import()`, `Function()`, `process.env`, `child_process`, `fs.`
+  - Strip ANSI escape codes (log injection prevention)
+  - Enforce length limits (default: 1000 chars)
+  - Enforce nesting depth limits (default: 100 levels)
+  - Reject null bytes
+  - Sanitize queries in error messages/logs
+- **CWE**: CWE-78 (OS Command Injection)
+- **Credit**: Internal security audit
+
+**[HIGH] BF006: Input Validation Limits Added**
+- **Issue**: Parser accepted unlimited line lengths and field counts
+- **Impact**: Memory exhaustion, CPU exhaustion, parser crashes
+- **Fix**: Added input validation limits to parser
+- **Files Changed**:
+  - `src/parser.ts` (MAX_LINE_LENGTH: 100KB, MAX_FIELDS_PER_LINE: 10K)
+- **CWE**: CWE-20 (Improper Input Validation)
+- **Credit**: Internal security audit
+
+**[HIGH] BF007: Unhandled Promise Rejections Fixed**
+- **Issue**: Async operations lacked proper error handling
+- **Impact**: Silent failures, application crashes
+- **Fix**: Added global error handlers and wrapped async imports
+- **Files Changed**:
+  - `src/cli.ts` (process.on handlers, try-catch for imports)
+- **CWE**: CWE-755 (Improper Error Handling)
+- **Credit**: Internal security audit
+
+**[HIGH] BF008: Integer Overflow Protection Added**
+- **Issue**: Array index calculations lacked overflow protection
+- **Impact**: Infinite loops (step=0), incorrect array access
+- **Fix**: Added safe integer validation and step=0 check
+- **Files Changed**:
+  - `src/query/evaluator.ts` (Number.isSafeInteger checks, step validation, negative step handling)
+- **CWE**: CWE-190 (Integer Overflow)
+- **Credit**: Internal security audit
+
+**[MEDIUM-HIGH] BF010: Type Coercion Bugs Fixed**
+- **Issue**: Type coercion accepted invalid values (overflow, NaN, silent truncation)
+- **Impact**: Data corruption, silent failures
+- **Fix**: Strict validation with regex checks and overflow detection
+- **Files Changed**:
+  - `src/infer.ts` (strict decimal validation, overflow checks, NaN/Infinity rejection)
+- **CWE**: CWE-704 (Incorrect Type Conversion)
+- **Credit**: Internal security audit
+
+**Upgrade Recommendation**: All users should upgrade immediately. These are critical security fixes.
+
+**Note**: BF009 (Circular Reference) - existing implementation sufficient, no fix needed.
+**Note**: BF011-015 (P2 Medium Priority) - deferred to future maintenance (non-critical).
+
+---
+
+## ðŸ›¡ï¸ Security Testing
+
+Run security tests:
+
+```bash
+# Run security exploit tests
+npm test test/security/exploits/
+
+# Run fuzzing tests
+npm test test/security/fuzzing/
+
+# Run full test suite
+npm test
+```
+
+---
+
+## ðŸ“š Best Practices
+
+### For Application Developers
+
+1. **Keep CanL3 Updated**: Security fixes are released promptly
+2. **Validate User Input**: Even with CanL3's protections, validate input at your application layer
+3. **Handle SecurityError**: Catch and log `SecurityError` in production
+4. **Rate Limiting**: Implement query rate limits if accepting user-supplied queries
+5. **Monitor Logs**: Watch for `[SECURITY]` warnings in console output
+
+### For CanL3 Contributors
+
+1. **Never Trust User Input**: Assume all input is malicious
+2. **Defense in Depth**: Multiple layers of protection (validation + timeout)
+3. **Fail Securely**: Throw errors instead of silently failing
+4. **Test Security**: All security fixes must include exploit tests
+5. **Document Changes**: Update this file with every security change
+
+### Security Testing
+
+Run security tests:
+
+```bash
+# Run security exploit tests
+npm test test/security/exploits/
+
+# Run fuzzing tests
+npm test test/security/fuzzing/
+
+# Run full test suite
+npm test
+```
+
+---
+
+## Security Resources
+
+- **OWASP ReDoS**: https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS
+- **CWE-1333**: https://cwe.mitre.org/data/definitions/1333.html
+- **Node.js Security**: https://nodejs.org/en/docs/guides/security/
+
+---
+
+## Contact
+
+For security issues, contact:
+- Create a private security advisory on GitHub
+- Email maintainers (check package.json for contact info)
+
+**Response Time**: Within 48 hours
+**Fix Timeline**: Critical issues within 7 days
+
+---
+
+**Last Updated**: 2025-11-05
+**Version**: 1.0
+

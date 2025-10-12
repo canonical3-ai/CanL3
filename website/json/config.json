@@ -1,0 +1,105 @@
+{
+  "application": {
+    "name": "Production API Server",
+    "version": "2.5.3",
+    "environment": "production",
+    "region": "us-west-2",
+    "deployment": {
+      "strategy": "blue-green",
+      "replicas": 5,
+      "minReplicas": 3,
+      "maxReplicas": 20,
+      "autoscaling": {
+        "enabled": true,
+        "cpuThreshold": 70,
+        "memoryThreshold": 80,
+        "scaleUpDelay": 60,
+        "scaleDownDelay": 300
+      }
+    },
+    "database": {
+      "primary": {
+        "host": "prod-db-master.example.com",
+        "port": 5432,
+        "database": "production",
+        "ssl": true,
+        "poolSize": 20,
+        "maxConnections": 100,
+        "connectionTimeout": 5000,
+        "queryTimeout": 30000
+      },
+      "replicas": [
+        {"host": "prod-db-replica-1.example.com", "port": 5432, "priority": 1, "lag": 0},
+        {"host": "prod-db-replica-2.example.com", "port": 5432, "priority": 2, "lag": 100},
+        {"host": "prod-db-replica-3.example.com", "port": 5432, "priority": 3, "lag": 200}
+      ]
+    },
+    "cache": {
+      "redis": {
+        "enabled": true,
+        "cluster": [
+          {"host": "redis-1.example.com", "port": 6379, "role": "master"},
+          {"host": "redis-2.example.com", "port": 6379, "role": "slave"},
+          {"host": "redis-3.example.com", "port": 6379, "role": "slave"}
+        ],
+        "ttl": 3600,
+        "maxMemory": "2gb",
+        "evictionPolicy": "allkeys-lru"
+      }
+    },
+    "monitoring": {
+      "metrics": {
+        "enabled": true,
+        "interval": 60,
+        "retention": 2592000,
+        "exporters": ["prometheus", "cloudwatch", "datadog"]
+      },
+      "logging": {
+        "level": "info",
+        "format": "json",
+        "outputs": ["stdout", "file", "cloudwatch"],
+        "rotation": {
+          "maxSize": "100mb",
+          "maxAge": 30,
+          "compress": true
+        }
+      },
+      "tracing": {
+        "enabled": true,
+        "samplingRate": 0.1,
+        "exporter": "jaeger",
+        "endpoint": "jaeger.example.com:14268"
+      }
+    },
+    "security": {
+      "authentication": {
+        "providers": ["jwt", "oauth2", "api-key"],
+        "jwtSecret": "***REDACTED***",
+        "tokenExpiry": 3600,
+        "refreshTokenExpiry": 2592000
+      },
+      "rateLimit": {
+        "enabled": true,
+        "windowMs": 900000,
+        "maxRequests": 100,
+        "skipSuccessfulRequests": false,
+        "skipFailedRequests": false
+      },
+      "cors": {
+        "enabled": true,
+        "origins": ["https://app.example.com", "https://admin.example.com"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "PATCH"],
+        "credentials": true
+      }
+    },
+    "features": {
+      "experimentalMode": false,
+      "maintenanceMode": false,
+      "readOnlyMode": false,
+      "apiVersioning": true,
+      "webhooksEnabled": true,
+      "analyticsEnabled": true,
+      "cacheEnabled": true
+    }
+  }
+}

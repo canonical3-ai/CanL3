@@ -1,0 +1,38 @@
+{
+  "catalog": "Electronics & Accessories",
+  "currency": "USD",
+  "products": [
+    {"sku": "LAPTOP-001", "name": "Professional Laptop 15-inch", "category": "Computers", "brand": "TechPro", "price": 1299.99, "stock": 45, "rating": 4.7, "reviews": 234, "features": ["Intel i7", "16GB RAM", "512GB SSD"], "warranty": 24, "supplier": "DirectTech Inc", "weight": 1.8, "dimensions": "14x10x0.7"},
+    {"sku": "LAPTOP-002", "name": "Gaming Laptop 17-inch", "category": "Computers", "brand": "GameMaster", "price": 1899.99, "stock": 23, "rating": 4.8, "reviews": 189, "features": ["RTX 4070", "32GB RAM", "1TB SSD"], "warranty": 12, "supplier": "GamingDirect", "weight": 2.9, "dimensions": "16x11x1.2"},
+    {"sku": "LAPTOP-003", "name": "Ultrabook 13-inch", "category": "Computers", "brand": "SlimTech", "price": 999.99, "stock": 67, "rating": 4.5, "reviews": 156, "features": ["Intel i5", "8GB RAM", "256GB SSD"], "warranty": 24, "supplier": "DirectTech Inc", "weight": 1.2, "dimensions": "12x8x0.5"},
+    {"sku": "MOUSE-001", "name": "Wireless Gaming Mouse", "category": "Accessories", "brand": "ClickMaster", "price": 79.99, "stock": 234, "rating": 4.6, "reviews": 567, "features": ["12000 DPI", "RGB", "Wireless"], "warranty": 12, "supplier": "PeripheralsCo", "weight": 0.12, "dimensions": "5x3x1.5"},
+    {"sku": "MOUSE-002", "name": "Ergonomic Office Mouse", "category": "Accessories", "brand": "ComfortClick", "price": 49.99, "stock": 178, "rating": 4.4, "reviews": 423, "features": ["Ergonomic", "Wireless", "Silent"], "warranty": 12, "supplier": "PeripheralsCo", "weight": 0.09, "dimensions": "4.5x3x2"},
+    {"sku": "KEYBOARD-001", "name": "Mechanical RGB Keyboard", "category": "Accessories", "brand": "KeyMaster Pro", "price": 159.99, "stock": 89, "rating": 4.8, "reviews": 892, "features": ["Cherry MX Blue", "RGB", "USB-C"], "warranty": 24, "supplier": "PeripheralsCo", "weight": 1.1, "dimensions": "17x5x1.5"},
+    {"sku": "KEYBOARD-002", "name": "Compact Wireless Keyboard", "category": "Accessories", "brand": "MiniKey", "price": 69.99, "stock": 156, "rating": 4.3, "reviews": 234, "features": ["Bluetooth", "Compact", "Rechargeable"], "warranty": 12, "supplier": "PeripheralsCo", "weight": 0.5, "dimensions": "11x4x0.8"},
+    {"sku": "MONITOR-001", "name": "4K Professional Monitor 27-inch", "category": "Displays", "brand": "ViewPro", "price": 599.99, "stock": 34, "rating": 4.7, "reviews": 445, "features": ["4K UHD", "IPS", "HDR"], "warranty": 36, "supplier": "DisplayCo", "weight": 6.5, "dimensions": "24x16x2"},
+    {"sku": "MONITOR-002", "name": "Gaming Monitor 32-inch Curved", "category": "Displays", "brand": "GameView", "price": 749.99, "stock": 28, "rating": 4.9, "reviews": 623, "features": ["QHD", "144Hz", "Curved"], "warranty": 24, "supplier": "DisplayCo", "weight": 8.2, "dimensions": "28x18x3"},
+    {"sku": "HEADSET-001", "name": "Noise-Cancelling Headphones", "category": "Audio", "brand": "SoundPro", "price": 299.99, "stock": 112, "rating": 4.6, "reviews": 1234, "features": ["ANC", "Wireless", "40hr Battery"], "warranty": 12, "supplier": "AudioTech", "weight": 0.25, "dimensions": "7x7x3"},
+    {"sku": "HEADSET-002", "name": "Gaming Headset RGB", "category": "Audio", "brand": "GameSound", "price": 129.99, "stock": 198, "rating": 4.5, "reviews": 789, "features": ["7.1 Surround", "RGB", "USB"], "warranty": 12, "supplier": "AudioTech", "weight": 0.35, "dimensions": "8x7x4"},
+    {"sku": "WEBCAM-001", "name": "4K Webcam Pro", "category": "Video", "brand": "CamPro", "price": 199.99, "stock": 67, "rating": 4.7, "reviews": 345, "features": ["4K", "Auto-focus", "Privacy Shutter"], "warranty": 24, "supplier": "VideoCo", "weight": 0.18, "dimensions": "4x3x3"},
+    {"sku": "CABLE-001", "name": "USB-C to USB-C Cable 2m", "category": "Accessories", "brand": "CableTech", "price": 19.99, "stock": 456, "rating": 4.5, "reviews": 234, "features": ["100W", "USB 3.2", "Braided"], "warranty": 6, "supplier": "CableCo", "weight": 0.05, "dimensions": "0.3x0.3x200"},
+    {"sku": "CABLE-002", "name": "HDMI 2.1 Cable 3m", "category": "Accessories", "brand": "CableTech", "price": 24.99, "stock": 345, "rating": 4.6, "reviews": 189, "features": ["8K", "48Gbps", "eARC"], "warranty": 12, "supplier": "CableCo", "weight": 0.08, "dimensions": "0.5x0.5x300"},
+    {"sku": "DOCK-001", "name": "USB-C Docking Station", "category": "Accessories", "brand": "DockMaster", "price": 249.99, "stock": 56, "rating": 4.4, "reviews": 567, "features": ["12 Ports", "100W PD", "Dual 4K"], "warranty": 24, "supplier": "DockCo", "weight": 0.65, "dimensions": "12x8x2"},
+    {"sku": "CHARGER-001", "name": "GaN Charger 100W", "category": "Accessories", "brand": "FastCharge", "price": 59.99, "stock": 234, "rating": 4.7, "reviews": 892, "features": ["GaN", "3 Ports", "Foldable"], "warranty": 12, "supplier": "PowerTech", "weight": 0.19, "dimensions": "3x3x1.2"},
+    {"sku": "SSD-001", "name": "External SSD 1TB", "category": "Storage", "brand": "SpeedDrive", "price": 149.99, "stock": 123, "rating": 4.8, "reviews": 678, "features": ["1050MB/s", "USB 3.2", "Portable"], "warranty": 36, "supplier": "StorageCo", "weight": 0.08, "dimensions": "4x2x0.4"},
+    {"sku": "SSD-002", "name": "External SSD 2TB", "category": "Storage", "brand": "SpeedDrive", "price": 259.99, "stock": 89, "rating": 4.7, "reviews": 445, "features": ["1050MB/s", "USB 3.2", "Rugged"], "warranty": 36, "supplier": "StorageCo", "weight": 0.09, "dimensions": "4.5x2.5x0.5"},
+    {"sku": "RAM-001", "name": "DDR5 32GB Kit (2x16GB)", "category": "Components", "brand": "MemoryPro", "price": 179.99, "stock": 78, "rating": 4.6, "reviews": 234, "features": ["DDR5-5600", "RGB", "CL36"], "warranty": "lifetime", "supplier": "ComponentsCo", "weight": 0.05, "dimensions": "5x0.5x0.2"},
+    {"sku": "GPU-001", "name": "Graphics Card RTX 4070", "category": "Components", "brand": "GraphixPro", "price": 649.99, "stock": 12, "rating": 4.9, "reviews": 1567, "features": ["12GB VRAM", "DLSS 3", "Ray Tracing"], "warranty": 36, "supplier": "GPUDirect", "weight": 1.2, "dimensions": "12x5x2"},
+    {"sku": "COOLER-001", "name": "CPU Liquid Cooler 280mm", "category": "Components", "brand": "CoolMaster", "price": 129.99, "stock": 67, "rating": 4.5, "reviews": 345, "features": ["RGB", "Silent", "280mm"], "warranty": 24, "supplier": "CoolingTech", "weight": 1.5, "dimensions": "12x12x3"},
+    {"sku": "PSU-001", "name": "Modular PSU 850W Gold", "category": "Components", "brand": "PowerMax", "price": 149.99, "stock": 45, "rating": 4.7, "reviews": 567, "features": ["80+ Gold", "Modular", "Silent"], "warranty": 60, "supplier": "PowerTech", "weight": 1.8, "dimensions": "6x6x3"}
+  ],
+  "stats": {
+    "totalProducts": 22,
+    "totalValue": 8844.78,
+    "avgPrice": 402.03,
+    "avgRating": 4.65,
+    "totalReviews": 11089,
+    "categories": ["Computers", "Accessories", "Displays", "Audio", "Video", "Storage", "Components"],
+    "inStockItems": 22,
+    "lowStockItems": 5
+  }
+}

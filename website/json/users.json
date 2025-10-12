@@ -1,0 +1,9 @@
+{
+  "users": [
+    {"id": 1, "username": "alice_smith", "email": "alice@company.com", "firstName": "Alice", "lastName": "Smith", "age": 30, "role": "admin", "department": "Engineering", "verified": true, "lastLogin": "2025-11-04T10:30:00Z"},
+    {"id": 2, "username": "bob_jones", "email": "bob@company.com", "firstName": "Bob", "lastName": "Jones", "age": 28, "role": "user", "department": "Marketing", "verified": true, "lastLogin": "2025-11-03T15:22:00Z"},
+    {"id": 3, "username": "carol_white", "email": "carol@company.com", "firstName": "Carol", "lastName": "White", "age": 35, "role": "editor", "department": "Content", "verified": true, "lastLogin": "2025-11-04T09:15:00Z"},
+    {"id": 4, "username": "dave_brown", "email": "dave@company.com", "firstName": "Dave", "lastName": "Brown", "age": 42, "role": "moderator", "department": "Support", "verified": true, "lastLogin": "2025-11-02T14:30:00Z"},
+    {"id": 5, "username": "eve_davis", "email": "eve@company.com", "firstName": "Eve", "lastName": "Davis", "age": 26, "role": "user", "department": "Sales", "verified": false, "lastLogin": "2025-11-01T11:45:00Z"}
+  ]
+}

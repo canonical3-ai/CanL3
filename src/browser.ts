@@ -1,0 +1,128 @@
+﻿/**
+ * CanL3 Browser Entry Point
+ *
+ * Browser-safe exports (excludes Node.js-specific features like fs, readline)
+ */
+
+// Core encode/decode
+export type { EncodeOptions, DecodeOptions } from "./types.js";
+export type { CanL3Value, CanL3Object, CanL3Array, CanL3TypeHint, CanL3Delimiter } from "./types.js";
+
+import { encodeCanL3 as _encodeCanL3 } from "./encode.js";
+import { decodeCanL3 as _decodeCanL3 } from "./decode.js";
+import { parseCanL3Line, parseHeaderLine, parseObjectHeader, detectDelimiter } from "./parser.js";
+import { inferPrimitiveType, coerceValue, isUniformObjectArray } from "./infer.js";
+
+export { _decodeCanL3 as decodeCanL3, parseCanL3Line, parseHeaderLine, parseObjectHeader, detectDelimiter, inferPrimitiveType, coerceValue, isUniformObjectArray };
+
+/**
+ * Transform object keys to safe alternatives for CanL3 compatibility
+ */
+function transformObjectKeys(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(transformObjectKeys);
+  }
+
+  if (obj !== null && typeof obj === 'object') {
+    const transformed: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      let safeKey = key;
+
+      // Transform problematic keys
+      if (key === '#') {
+        safeKey = 'hash_key';
+      } else if (key === '') {
+        safeKey = 'empty_key';
+      } else if (key.includes('@')) {
+        safeKey = key.replace(/@/g, '_at_');
+      } else if (key.includes(':')) {
+        safeKey = key.replace(/:/g, '_colon_');
+      } else if (key.includes('.')) {
+        safeKey = key.replace(/\./g, '_dot_');
+      } else if (key.includes(' ')) {
+        safeKey = key.replace(/ /g, '_space_');
+      } else if (key.includes('$')) {
+        safeKey = key.replace(/\$/g, '_dollar_');
+      }
+
+      transformed[safeKey] = transformObjectKeys(value);
+    }
+    return transformed;
+  }
+
+  return obj;
+}
+
+/**
+ * Preprocess JSON string to handle problematic characters in keys
+ */
+export function preprocessJSON(jsonString: string): any {
+  try {
+    const data = JSON.parse(jsonString);
+    return transformObjectKeys(data);
+  } catch (error) {
+    throw new Error(`Invalid JSON: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+/** Analyze a JSON value and choose the most compact text layout automatically. */
+export function encodeSmart(input: any, opts?: {
+  delimiter?: "," | "|" | "\t" | ";";
+  includeTypes?: boolean;
+  version?: string;
+  indent?: number;
+  singleLinePrimitiveLists?: boolean;
+}): string {
+  const jsonStr = JSON.stringify(input);
+
+  // Optimized delimiter counting - single pass through string (O(n) instead of O(4n))
+  let commaCount = 0, pipeCount = 0, tabCount = 0, semicolonCount = 0;
+  for (let i = 0; i < jsonStr.length; i++) {
+    switch (jsonStr[i]) {
+      case ',': commaCount++; break;
+      case '|': pipeCount++; break;
+      case '\t': tabCount++; break;
+      case ';': semicolonCount++; break;
+    }
+  }
+
+  let bestDelimiter: "," | "|" | "\t" | ";" = ",";
+  let minQuoting = commaCount;
+
+  if (pipeCount < minQuoting) {
+    bestDelimiter = "|";
+    minQuoting = pipeCount;
+  }
+  if (tabCount < minQuoting) {
+    bestDelimiter = "\t";
+    minQuoting = tabCount;
+  }
+  if (semicolonCount < minQuoting) {
+    bestDelimiter = ";";
+    minQuoting = semicolonCount;
+  }
+
+  const smartOpts = {
+    delimiter: bestDelimiter,
+    includeTypes: false,
+    version: "1.0",
+    indent: 2,
+    singleLinePrimitiveLists: true,
+    ...opts
+  };
+
+  return _encodeCanL3(input, smartOpts);
+}
+
+export const encodeCanL3 = _encodeCanL3;
+
+// Export browser-safe CanL3Document (without file operations)
+export { CanL3DocumentBrowser as CanL3Document, type DocumentStats } from './document-browser.js';
+
+// Export Query API
+export * from './query/index.js';
+
+// Export Navigation API
+export * from './navigation/index.js';
+
+

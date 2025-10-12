@@ -1,0 +1,8 @@
+﻿@CanL3 v1
+
+users[2]{id:u32,username,email,firstName,lastName,age:u32,roles,createdAt,updatedAt}:
+  1,john_doe,john@example.com,John,Doe,28,"admin,user",2025-01-15,2025-01-15
+  2,jane_smith,jane@example.com,Jane,Smith,32,"user",2025-01-16,2025-01-16
+
+totalCount: 2
+

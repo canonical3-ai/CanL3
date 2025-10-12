@@ -1,0 +1,2249 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playground - CanL3 Live Converter</title>
+    <script src="js/CanL3.iife.js?v=2.5.1"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre, textarea { font-family: 'JetBrains Mono', monospace; }
+
+        /* Line numbers container */
+        .editor-container {
+            position: relative;
+            display: flex;
+        }
+
+        .line-numbers {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            background: #1e293b;
+            color: #64748b;
+            font-size: 10px;
+            padding: 16px 8px;
+            text-align: right;
+            line-height: 1.5;
+            user-select: none;
+            overflow: hidden;
+            border-right: 1px solid #334155;
+        }
+
+        .line-numbers-emerald {
+            background: #064e3b;
+            border-right-color: #10b981;
+            color: #6ee7b7;
+        }
+
+        .editor-textarea {
+            padding-left: 48px !important;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        /* Custom scrollbar for textareas */
+        .editor-textarea::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .editor-textarea::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        .editor-textarea::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+
+        .editor-textarea::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Loading animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading { animation: spin 1s linear infinite; }
+
+        /* Smooth transitions */
+        button { transition: all 0.2s ease; }
+        button:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+    <!-- Navigation -->
+    <nav class="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50" x-data="{ mobileOpen: false }">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="/" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl font-bold text-white">T</span>
+                    </div>
+                    <span class="text-2xl font-bold text-slate-900">CanL3</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="format-overview.html" class="text-slate-600 hover:text-slate-900 font-medium transition">Format</a>
+                    <a href="docs.html" class="text-slate-600 hover:text-slate-900 font-medium transition">Docs</a>
+                    <a href="examples.html" class="text-slate-600 hover:text-slate-900 font-medium transition">Playground</a>
+                    <a href="cli.html" class="text-blue-600 hover:text-blue-800 font-medium transition font-semibold">CLI</a>
+                    <a href="https://github.com/CanL3-dev/CanL3" target="_blank" class="text-slate-600 hover:text-slate-900 font-medium transition">GitHub</a>
+                    <a href="https://www.npmjs.com/package/CanL3" target="_blank" class="bg-slate-900 text-white px-5 py-2 rounded-lg font-semibold hover:bg-slate-800 transition">
+                        Install
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button @click="mobileOpen = !mobileOpen" class="md:hidden">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div x-show="mobileOpen" x-transition class="md:hidden mt-4 pb-4 space-y-2">
+                <a href="format-overview.html" class="block py-2 text-slate-600 hover:text-slate-900">Format</a>
+                <a href="docs.html" class="block py-2 text-slate-600 hover:text-slate-900">Docs</a>
+                <a href="examples.html" class="block py-2 text-slate-600 hover:text-slate-900">Playground</a>
+                <a href="cli.html" class="block py-2 text-blue-600 hover:text-blue-800 font-semibold">CLI</a>
+                <a href="https://github.com/CanL3-dev/CanL3" class="block py-2 text-slate-600 hover:text-slate-900">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="max-w-6xl mx-auto px-4 py-8" x-data="playground()">
+
+        <!-- Header with Live Stats -->
+        <div class="mb-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-6">
+               <div class="flex-1">
+                    <h1 class="text-3xl font-bold text-slate-900 mb-2">ðŸ”„ Format Converter</h1>
+                    <p class="text-slate-600">Convert between JSON and CanL3 formats with real-time preview. Try the <a href="cli.html" class="text-blue-600 hover:text-blue-800 font-medium">Interactive CLI Demo</a> for command-line experience!</p>
+                </div>
+
+              <!-- Stats Grid - Right Side -->
+                <div class="grid grid-cols-3 gap-3 lg:w-auto">
+                    <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+                        <div class="text-xs text-slate-500">Format Examples</div>
+                        <div class="text-3xl font-bold text-slate-900 mt-1">15+</div>
+                        <div class="text-xs text-emerald-600 mt-1">Ready to try</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+                        <div class="text-xs text-slate-500">Compression</div>
+                        <div class="text-3xl font-bold text-slate-900 mt-1">35%</div>
+                        <div class="text-xs text-blue-600 mt-1">Average savings</div>
+                    </div>
+                    <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+                        <div class="text-xs text-slate-500">Type Hints</div>
+                        <div class="text-3xl font-bold text-slate-900 mt-1">13</div>
+                        <div class="text-xs text-purple-600 mt-1">Lines</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+  
+        <!-- Example Templates -->
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-semibold text-slate-900">Try Examples</h3>
+                <button @click="clearAll()" class="text-xs text-slate-500 hover:text-slate-700 transition">Clear</button>
+            </div>
+
+            <!-- Real JSON File Examples -->
+            <div class="mb-4 p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-lg border border-emerald-200 shadow-sm">
+                <h4 class="text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2">
+                    <span>â­</span> Large Datasets (Best for Demo)
+                </h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="loadExample('employees')" class="group p-3 bg-white border border-emerald-300 rounded-lg hover:border-emerald-500 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ‘”</span>
+                            <span class="font-semibold text-sm text-emerald-700">Employees</span>
+                        </div>
+                        <div class="text-xs text-slate-500">100 Â· 45 KB Â· ~44%</div>
+                    </button>
+                    <button @click="loadExample('products')" class="group p-3 bg-white border border-emerald-300 rounded-lg hover:border-emerald-500 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ›ï¸</span>
+                            <span class="font-semibold text-sm text-emerald-700">Products</span>
+                        </div>
+                        <div class="text-xs text-slate-500">100 Â· 31 KB Â· ~45%</div>
+                    </button>
+                    <button @click="loadExample('apiLogs')" class="group p-3 bg-white border border-emerald-300 rounded-lg hover:border-emerald-500 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ“‹</span>
+                            <span class="font-semibold text-sm text-emerald-700">API Logs</span>
+                        </div>
+                        <div class="text-xs text-slate-500">20 Â· 5 KB Â· ~40%</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- More Examples -->
+            <div class="mb-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 shadow-sm">
+                <h4 class="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                    <span>ðŸŽ¯</span> Common Use Cases
+                </h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="loadExample('logs')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ“</span>
+                            <span class="font-semibold text-sm text-blue-700">Logs</span>
+                        </div>
+                        <div class="text-xs text-slate-500">5 logs Â· ~38%</div>
+                    </button>
+                    <button @click="loadExample('analytics')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ“Š</span>
+                            <span class="font-semibold text-sm text-blue-700">Analytics</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Report Â· ~42%</div>
+                    </button>
+                    <button @click="loadExample('timeseries')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ“ˆ</span>
+                            <span class="font-semibold text-sm text-blue-700">Time Series</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Sensor Â· ~45%</div>
+                    </button>
+                    <button @click="loadExample('api')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ”Œ</span>
+                            <span class="font-semibold text-sm text-blue-700">API Response</span>
+                        </div>
+                        <div class="text-xs text-slate-500">REST Â· ~38%</div>
+                    </button>
+                    <button @click="loadExample('social')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ’¬</span>
+                            <span class="font-semibold text-sm text-blue-700">Social Feed</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Posts Â· ~36%</div>
+                    </button>
+                    <button @click="loadExample('catalog')" class="group p-3 bg-white border border-blue-200 rounded-lg hover:border-blue-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ“¦</span>
+                            <span class="font-semibold text-sm text-blue-700">Catalog</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Products Â· ~43%</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Complex Examples -->
+            <div class="mb-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200 shadow-sm">
+                <h4 class="text-sm font-semibold text-purple-900 mb-3 flex items-center gap-2">
+                    <span>ðŸ—ï¸</span> Complex Structures
+                </h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="loadExample('nested')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ¢</span>
+                            <span class="font-semibold text-sm text-purple-700">Nested</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Deep Â· ~35%</div>
+                    </button>
+                    <button @click="loadExample('large')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ—„ï¸</span>
+                            <span class="font-semibold text-sm text-purple-700">Large Company</span>
+                        </div>
+                        <div class="text-xs text-slate-500">3 employees Â· ~37%</div>
+                    </button>
+                    <button @click="loadExample('ecommerce')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ›’</span>
+                            <span class="font-semibold text-sm text-purple-700">E-Commerce</span>
+                        </div>
+                        <div class="text-xs text-slate-500">Store Â· ~39%</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Schema-First Examples -->
+            <div class="mb-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border border-purple-200 shadow-sm">
+                <h4 class="text-sm font-semibold text-purple-900 mb-3 flex items-center gap-2">
+                    <span>ðŸ—ï¸</span> Schema-First Examples
+                </h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="loadExample('schema-teams')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ‘¥</span>
+                            <span class="font-semibold text-sm text-purple-700">Teams</span>
+                        </div>
+                        <div class="text-xs text-slate-500">2 teams Â· Nested arrays</div>
+                    </button>
+                    <button @click="loadExample('schema-products')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ“¦</span>
+                            <span class="font-semibold text-sm text-purple-700">Products</span>
+                        </div>
+                        <div class="text-xs text-slate-500">3 products Â· E-commerce</div>
+                    </button>
+                    <button @click="loadExample('schema-employees')" class="group p-3 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-md transition text-left">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="text-xl">ðŸ‘”</span>
+                            <span class="font-semibold text-sm text-purple-700">Employees</span>
+                        </div>
+                        <div class="text-xs text-slate-500">5 employees Â· Company data</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Simple Examples -->
+            <div class="mb-4">
+                <h4 class="text-sm font-semibold text-slate-700 mb-2">Quick Start</h4>
+                <div class="grid grid-cols-3 gap-2">
+                    <button @click="loadExample('small')" class="group p-2 bg-white border border-slate-200 rounded-lg hover:border-slate-400 hover:shadow-sm transition text-left">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">ðŸ“„</span>
+                            <span class="font-medium text-xs text-slate-700">Simple</span>
+                        </div>
+                    </button>
+                    <button @click="loadExample('users')" class="group p-2 bg-white border border-slate-200 rounded-lg hover:border-slate-400 hover:shadow-sm transition text-left">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">ðŸ‘¥</span>
+                            <span class="font-medium text-xs text-slate-700">Users</span>
+                        </div>
+                    </button>
+                    <button @click="loadExample('config')" class="group p-2 bg-white border border-slate-200 rounded-lg hover:border-slate-400 hover:shadow-sm transition text-left">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">âš™ï¸</span>
+                            <span class="font-medium text-xs text-slate-700">Config</span>
+                        </div>
+                    </button>
+                </div>
+                <div class="mt-5 p-6 bg-gradient-to-r from-white to-emerald-50 rounded-xl border-3 border-emerald-500 shadow-xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="text-4xl">ðŸ’¡</div>
+                            <div>
+                                <p class="text-base text-emerald-900 font-bold">Pro Tip: Test Type Hints!</p>
+                                <p class="text-xs text-slate-700">Toggle types to see the difference in output size and validation capability</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Schema-First & Type Hints Toggle (Shadcn-style) -->
+                    <div class="p-4 bg-white rounded-lg border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <label class="text-sm font-semibold text-slate-700">Schema-First Format</label>
+                                <p class="text-xs text-slate-500">Tabular format with minimal repetition</p>
+                            </div>
+                            <button @click="schemaFirst = !schemaFirst; jsonToCanL3();"
+                                    :class="schemaFirst ? 'bg-emerald-500' : 'bg-slate-300'"
+                                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2">
+                                <span :class="schemaFirst ? 'translate-x-6' : 'translate-x-1'"
+                                      class="inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200"></span>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <label class="text-sm font-semibold text-slate-700">Include Type Hints</label>
+                                <p class="text-xs text-slate-500">See type metadata difference</p>
+                            </div>
+                            <button @click="includeTypes = !includeTypes; jsonToCanL3();"
+                                    :class="includeTypes ? 'bg-emerald-500' : 'bg-slate-300'"
+                                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2">
+                                <span :class="includeTypes ? 'translate-x-6' : 'translate-x-1'"
+                                      class="inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform duration-200"></span>
+                            </button>
+                        </div>
+
+                        <!-- Format Comparison -->
+                        <div class="grid grid-cols-3 gap-2">
+                            <div :class="!schemaFirst && !includeTypes ? 'bg-blue-50 border-blue-300' : 'bg-slate-50 border-slate-200'"
+                                 class="p-2 rounded-md border transition-all">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="text-sm">ðŸ“„</span>
+                                    <span class="text-xs font-semibold" :class="!schemaFirst && !includeTypes ? 'text-blue-700' : 'text-slate-500'">
+                                        Standard
+                                    </span>
+                                </div>
+                                <code class="text-xs text-slate-600 font-mono block break-all">users[3]:{...}</code>
+                            </div>
+
+                            <div :class="schemaFirst && !includeTypes ? 'bg-purple-50 border-purple-300' : 'bg-slate-50 border-slate-200'"
+                                 class="p-2 rounded-md border transition-all">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="text-sm">ðŸ—ï¸</span>
+                                    <span class="text-xs font-semibold" :class="schemaFirst && !includeTypes ? 'text-purple-700' : 'text-slate-500'">
+                                        Schema-First
+                                    </span>
+                                </div>
+                                <code class="text-xs text-slate-600 font-mono block break-all">#schema users{...}</code>
+                            </div>
+
+                            <div :class="includeTypes ? 'bg-emerald-50 border-emerald-300' : 'bg-slate-50 border-slate-200'"
+                                 class="p-2 rounded-md border transition-all">
+                                <div class="flex items-center gap-1 mb-1">
+                                    <span class="text-sm">âœ…</span>
+                                    <span class="text-xs font-semibold" :class="includeTypes ? 'text-emerald-700' : 'text-slate-500'">
+                                        Types
+                                    </span>
+                                </div>
+                                <code class="text-xs text-slate-600 font-mono block break-all">{id:u32,name:str,...}</code>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Playground -->
+        <div class="grid lg:grid-cols-2 gap-4">
+
+            <!-- JSON Input -->
+            <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-slate-700">JSON Input</h3>
+                    <div class="flex gap-2">
+                        <div class="flex gap-1 bg-white border border-slate-200 rounded-lg p-1">
+                            <button @click="setJSONFormat('compact')"
+                                    :class="jsonFormat === 'compact' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'"
+                                    class="px-2 py-1 text-xs rounded transition">
+                                Compact
+                            </button>
+                            <button @click="setJSONFormat('pretty')"
+                                    :class="jsonFormat === 'pretty' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900'"
+                                    class="px-2 py-1 text-xs rounded transition">
+                                Pretty
+                            </button>
+                        </div>
+                        <button @click="formatJSON()" class="px-3 py-1 text-xs bg-white border border-slate-200 hover:bg-slate-50 rounded-md transition">
+                            Format
+                        </button>
+                        <button @click="jsonToCanL3()" class="px-3 py-1 text-xs bg-slate-900 text-white rounded-md hover:bg-slate-800 transition">
+                            Convert â†’
+                        </button>
+                    </div>
+                </div>
+
+                <div class="editor-container">
+                    <div class="line-numbers" x-html="generateLineNumbers(jsonInput)"></div>
+                    <textarea
+                        x-model="jsonInput"
+                        @input="updateStats(); updateLineNumbers()"
+                        @scroll="syncScroll($event, 'json')"
+                        class="editor-textarea w-full h-[600px] bg-slate-900 text-slate-100 p-4 text-xs font-mono border-none focus:outline-none resize-none"
+                        placeholder="Paste JSON or select an example above..."
+                    ></textarea>
+                </div>
+
+                <div class="bg-slate-50 border-t border-slate-200 px-4 py-2 text-xs text-slate-600">
+                    <span x-text="jsonBytes.toLocaleString()"></span> bytes Â·
+                    <span x-text="jsonTokens.toLocaleString()"></span> tokens Â·
+                    <span x-text="jsonInput.split('\\n').length"></span> lines
+                </div>
+            </div>
+
+            <!-- CanL3 Output -->
+            <div class="bg-white border border-emerald-200 rounded-lg overflow-hidden shadow-sm">
+                <div class="bg-emerald-50 border-b border-emerald-200 px-4 py-3 flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-emerald-700">CanL3 Output</h3>
+                    <div class="flex gap-2">
+                        <button @click="CanL3ToJSON()" class="px-3 py-1 text-xs bg-white border border-emerald-200 hover:bg-emerald-50 rounded-md transition">
+                            â† Decode
+                        </button>
+                        <button @click="copyToClipboard(CanL3Output)" class="px-3 py-1 text-xs bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition">
+                            <span x-show="!copied">Copy</span>
+                            <span x-show="copied">âœ“</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="editor-container">
+                    <div class="line-numbers line-numbers-emerald" x-html="generateLineNumbers(CanL3Output)"></div>
+                    <textarea
+                        x-model="CanL3Output"
+                        readonly
+                        @scroll="syncScroll($event, 'CanL3')"
+                        class="editor-textarea w-full h-[600px] bg-slate-900 text-emerald-100 p-4 text-xs font-mono border-none focus:outline-none resize-none"
+                        placeholder="CanL3 output will appear here..."
+                    ></textarea>
+                </div>
+
+                <div class="bg-emerald-50 border-t border-emerald-200 px-4 py-2 text-xs font-semibold text-emerald-700">
+                    <span x-text="CanL3Bytes.toLocaleString()"></span> bytes Â·
+                    <span x-text="CanL3Tokens.toLocaleString()"></span> tokens Â·
+                    <span x-show="CanL3Bytes > 0" class="text-emerald-600" x-text="'â†“ ' + savings.tokens + '%'"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- JSON Format Comparison -->
+        <div class="mt-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 shadow-sm">
+            <div class="text-center mb-4">
+                <h3 class="text-lg font-bold text-slate-900 mb-1">JSON Format Comparison</h3>
+                <p class="text-sm text-slate-600">Compare compact vs pretty JSON sizes</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Compact JSON -->
+                <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+                        <h4 class="text-sm font-semibold text-slate-700">Compact JSON</h4>
+                        <div class="flex gap-2">
+                            <button @click="copyToClipboard(compactJSON)" class="px-2 py-1 text-xs bg-white border border-slate-200 hover:bg-slate-50 rounded-md transition">
+                                <span x-show="!copiedCompact">Copy</span>
+                                <span x-show="copiedCompact">âœ“</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="editor-container">
+                        <div class="line-numbers" x-html="generateLineNumbers(compactJSON)"></div>
+                        <textarea
+                            x-model="compactJSON"
+                            readonly
+                            @scroll="syncScroll($event, 'compact')"
+                            class="editor-textarea w-full h-[300px] bg-slate-900 text-slate-100 p-4 text-xs font-mono border-none focus:outline-none resize-none"
+                            placeholder="Compact JSON will appear here..."
+                        ></textarea>
+                    </div>
+                    <div class="bg-slate-50 border-t border-slate-200 px-4 py-2 text-xs text-slate-600">
+                        <span x-text="compactJSONBytes.toLocaleString()"></span> bytes Â·
+                        <span x-text="compactJSONTokens.toLocaleString()"></span> tokens Â·
+                        <span x-show="jsonBytes > 0" class="text-blue-600" x-text="'â†“ ' + compactSavings.tokens + '% vs pretty'"></span>
+                    </div>
+                </div>
+
+                <!-- Pretty JSON -->
+                <div class="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm">
+                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+                        <h4 class="text-sm font-semibold text-slate-700">Pretty JSON</h4>
+                        <div class="flex gap-2">
+                            <button @click="copyToClipboard(prettyJSON)" class="px-2 py-1 text-xs bg-white border border-slate-200 hover:bg-slate-50 rounded-md transition">
+                                <span x-show="!copiedPretty">Copy</span>
+                                <span x-show="copiedPretty">âœ“</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="editor-container">
+                        <div class="line-numbers" x-html="generateLineNumbers(prettyJSON)"></div>
+                        <textarea
+                            x-model="prettyJSON"
+                            readonly
+                            @scroll="syncScroll($event, 'pretty')"
+                            class="editor-textarea w-full h-[300px] bg-slate-900 text-slate-100 p-4 text-xs font-mono border-none focus:outline-none resize-none"
+                            placeholder="Pretty JSON will appear here..."
+                        ></textarea>
+                    </div>
+                    <div class="bg-slate-50 border-t border-slate-200 px-4 py-2 text-xs text-slate-600">
+                        <span x-text="prettyJSONBytes.toLocaleString()"></span> bytes Â·
+                        <span x-text="prettyJSONTokens.toLocaleString()"></span> tokens Â·
+                        <span x-text="prettyJSON.split('\\n').length"></span> lines
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Record Count Slider - Compact -->
+        <div class="mt-4 bg-white border border-slate-200 rounded-lg p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <span class="text-lg">ðŸ”„</span>
+                    <div>
+                        <label class="text-sm font-semibold text-slate-700">Adjust Dataset Size</label>
+                        <p class="text-xs text-slate-500">See how savings scale with data volume</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-lg">
+                    <div class="text-2xl font-bold text-blue-600" x-text="recordCount"></div>
+                    <span class="text-xs text-slate-400">/</span>
+                    <div class="text-sm font-medium text-slate-500" x-text="maxRecordCount"></div>
+                </div>
+            </div>
+
+            <input type="range"
+                   x-model="recordCount"
+                   @input="updateRecordCount()"
+                   min="1"
+                   :max="maxRecordCount"
+                   step="1"
+                   class="w-full h-2 bg-gradient-to-r from-blue-200 to-blue-400 rounded-lg appearance-none cursor-pointer slider-thumb">
+
+            <div class="flex justify-between text-xs text-slate-400 mt-2">
+                <span>1</span>
+                <span x-text="Math.floor(maxRecordCount * 0.5)"></span>
+                <span x-text="maxRecordCount"></span>
+            </div>
+        </div>
+
+        <!-- Live Token Comparison Stats -->
+        <div class="mt-6 bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-xl p-6 shadow-lg">
+            <div class="text-center mb-6">
+                <h3 class="text-lg font-bold text-slate-900 mb-1">Live Token Comparison</h3>
+                <p class="text-sm text-slate-600">Real-time savings as you convert</p>
+            </div>
+
+            <!-- Winner Display -->
+            <div x-show="jsonTokens > 0 && CanL3Tokens > 0"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100"
+                 class="mb-6">
+
+                <!-- CanL3 Winner Display -->
+                <div x-show="CanL3Tokens < jsonTokens"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 transform -translate-y-2"
+                     x-transition:enter-end="opacity-100 transform translate-y-0"
+                     class="text-center p-4 rounded-lg bg-gradient-to-r from-emerald-100 to-teal-100 border-2 border-emerald-300 shadow-lg">
+                    <div class="flex items-center justify-center space-x-3">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-8 h-8 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            <span class="text-xl font-bold text-emerald-800">WINNER: CanL3</span>
+                        </div>
+                        <div class="text-sm text-emerald-700 font-medium">
+                            (<span x-text="jsonTokens - CanL3Tokens"></span> fewer tokens)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- JSON Winner Display -->
+                <div x-show="jsonTokens <= CanL3Tokens"
+                     x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="opacity-0 transform -translate-y-2"
+                     x-transition:enter-end="opacity-100 transform translate-y-0"
+                     class="text-center p-4 rounded-lg bg-gradient-to-r from-blue-100 to-indigo-100 border-2 border-blue-300 shadow-lg">
+                    <div class="flex flex-col items-center space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                            <span class="text-xl font-bold text-blue-800">
+                                WINNER: <span x-show="jsonFormat === 'compact'">COMPACT JSON</span><span x-show="jsonFormat !== 'compact'">JSON</span>
+                            </span>
+                        </div>
+                        <div class="text-sm text-blue-700 font-medium">
+                            (<span x-show="jsonTokens < CanL3Tokens" x-text="CanL3Tokens - jsonTokens"></span><span x-show="jsonTokens === CanL3Tokens">0</span> fewer tokens)
+                        </div>
+                        <div class="flex items-center space-x-4 text-xs text-blue-600 mt-2">
+                            <div class="flex items-center space-x-1">
+                                <span>Normal JSON:</span>
+                                <span class="font-bold" x-text="prettyJSONTokens.toLocaleString()"></span>
+                                <span>tokens</span>
+                            </div>
+                            <div class="flex items-center space-x-1" x-show="jsonFormat === 'compact'">
+                                <span>â†’</span>
+                                <span>Compact:</span>
+                                <span class="font-bold text-green-600" x-text="jsonTokens.toLocaleString()"></span>
+                                <span class="text-green-600">tokens</span>
+                                <span class="text-green-600" x-text="'(-' + compactSavings.tokens + '%)'"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4">
+                <!-- JSON Stats -->
+                <div class="bg-white rounded-lg p-5 shadow-md border border-slate-200 relative">
+                    <div class="text-xs font-medium text-slate-500 mb-2">JSON Format</div>
+                    <div class="flex items-baseline gap-2 mb-1">
+                        <div class="text-3xl font-bold text-slate-900" x-text="jsonTokens.toLocaleString()"></div>
+                        <div class="text-sm text-slate-500">tokens</div>
+                    </div>
+                    <div class="text-xs text-slate-400" x-text="jsonBytes.toLocaleString() + ' bytes'"></div>
+                    <div class="mt-3 w-full bg-slate-200 rounded-full h-2 relative">
+                        <div class="bg-slate-400 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <div class="text-xs text-slate-500 mt-1">100% baseline</div>
+                </div>
+
+                <!-- CanL3 Stats -->
+                <div class="bg-white rounded-lg p-5 shadow-md border-2 border-emerald-400 relative">
+                    <div class="text-xs font-medium text-emerald-700 mb-2">CanL3 Format</div>
+                    <div class="flex items-baseline gap-2 mb-1">
+                        <div class="text-3xl font-bold text-emerald-600" x-text="CanL3Tokens.toLocaleString()"></div>
+                        <div class="text-sm text-emerald-600">tokens</div>
+                    </div>
+                    <div class="text-xs text-emerald-500" x-text="CanL3Bytes.toLocaleString() + ' bytes'"></div>
+                    <div class="mt-3 w-full bg-slate-200 rounded-full h-2 relative">
+                        <!-- Dynamic CanL3 progress bar -->
+                        <div class="h-2 rounded-full transition-all duration-500"
+                             :class="{
+                                 'bg-gradient-to-r from-green-500 to-green-600': CanL3Tokens > 0 && CanL3Tokens < jsonTokens,
+                                 'bg-gradient-to-r from-blue-500 to-blue-600': CanL3Tokens > 0 && CanL3Tokens === jsonTokens,
+                                 'bg-gradient-to-r from-red-500 to-red-600': CanL3Tokens > 0 && CanL3Tokens > jsonTokens,
+                                 'bg-slate-300': CanL3Tokens === 0
+                             }"
+                             :style="'width: ' + (CanL3Tokens > 0 && jsonTokens > 0 ? Math.min(Math.round((CanL3Tokens / jsonTokens) * 100), 100) : 0) + '%'"></div>
+                    </div>
+                    <div class="text-xs font-medium mt-1"
+                         :class="{
+                             'text-green-600': CanL3Tokens > 0 && CanL3Tokens < jsonTokens,
+                             'text-blue-600': CanL3Tokens > 0 && CanL3Tokens === jsonTokens,
+                             'text-red-600': CanL3Tokens > 0 && CanL3Tokens > jsonTokens,
+                             'text-slate-500': CanL3Tokens === 0
+                         }"
+                         x-text="(CanL3Tokens > 0 && jsonTokens > 0 ? Math.round((CanL3Tokens / jsonTokens) * 100) : 0) + '% of JSON'"></div>
+                </div>
+
+                <!-- Savings -->
+                <div class="rounded-lg p-5 shadow-xl text-white relative overflow-hidden"
+                     :class="savings.tokens > 0 ? 'bg-gradient-to-br from-emerald-500 to-teal-600' : 'bg-gradient-to-br from-slate-500 to-slate-600'">
+                    <div class="text-xs font-medium opacity-90 mb-2">Token Savings</div>
+                    <div class="flex items-baseline gap-2 mb-1">
+                        <div class="text-5xl font-bold" x-text="(savings.tokens > 0 ? savings.tokens : 0) + '%'"></div>
+                    </div>
+                    <div class="text-xs opacity-80 mb-3">vs JSON format</div>
+                    <div class="mt-3 pt-3 border-t border-white/20">
+                        <div class="text-xs opacity-90">Saved Tokens</div>
+                        <div class="text-xl font-bold" x-text="(jsonTokens - CanL3Tokens).toLocaleString()"></div>
+                    </div>
+                    <div class="mt-2 text-xs opacity-75 bg-white/10 rounded px-2 py-1 inline-block">
+                        <span x-show="savings.tokens > 0">Great savings!</span>
+                        <span x-show="savings.tokens <= 0">Try larger data</span>
+                    </div>
+
+                    <!-- Decorative background pattern -->
+                    <div class="absolute -right-4 -bottom-4 w-20 h-20 opacity-10">
+                        <svg class="w-full h-full" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Display -->
+        <div x-show="error" class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+            <p class="text-xs font-semibold text-red-900 mb-1">Error</p>
+            <p class="text-xs text-red-700" x-text="error"></p>
+        </div>
+
+    </div>
+
+    <script>
+        function playground() {
+            return {
+                jsonInput: '',
+                CanL3Output: '',
+                jsonBytes: 0,
+                CanL3Bytes: 0,
+                jsonTokens: 0,
+                CanL3Tokens: 0,
+                savings: { bytes: 0, tokens: 0 },
+                error: '',
+                copied: false,
+                copiedCompact: false,
+                copiedPretty: false,
+                includeTypes: false,
+                schemaFirst: false,
+                jsonFormat: 'pretty', // 'compact' or 'pretty'
+                recordCount: 10,
+                maxRecordCount: 100,
+                currentExample: 'users',
+                fullDataCache: {},
+                // JSON comparison data
+                compactJSON: '',
+                prettyJSON: '',
+                compactJSONBytes: 0,
+                prettyJSONBytes: 0,
+                compactJSONTokens: 0,
+                prettyJSONTokens: 0,
+                compactSavings: { bytes: 0, tokens: 0 },
+
+                async init() {
+                    await this.loadExample('users');
+                },
+
+                jsonToCanL3() {
+                    try {
+                        this.error = '';
+                        const data = JSON.parse(this.jsonInput);
+
+                        if (typeof CanL3 !== 'undefined' && CanL3.encodeCanL3) {
+                            // IMPORTANT: Pass includeTypes and schemaFirst options!
+                            // Note: Browser uses quoting by default (no preprocessing)
+                            this.CanL3Output = CanL3.encodeCanL3(data, {
+                                includeTypes: this.includeTypes,
+                                schemaFirst: this.schemaFirst
+                            });
+                        } else {
+                            this.CanL3Output = '#version 1.0\\n' + JSON.stringify(data, null, 2);
+                        }
+                        this.updateStats();
+                        this.updateJSONComparison();
+                    } catch (e) {
+                        this.error = 'JSON Parse Error: ' + e.message;
+                        this.CanL3Output = '';
+                    }
+                },
+
+                CanL3ToJSON() {
+                    try {
+                        this.error = '';
+                        if (typeof CanL3 !== 'undefined' && CanL3.decodeCanL3) {
+                            const data = CanL3.decodeCanL3(this.CanL3Output);
+                            this.jsonInput = JSON.stringify(data, null, 2);
+                            this.updateStats();
+                            this.updateJSONComparison();
+                        }
+                    } catch (e) {
+                        this.error = 'CanL3 Decode Error: ' + e.message;
+                    }
+                },
+
+                formatJSON() {
+                    try {
+                        const data = JSON.parse(this.jsonInput);
+                        this.jsonInput = JSON.stringify(data, null, 2);
+                        this.error = '';
+                    } catch (e) {
+                        this.error = 'Invalid JSON: ' + e.message;
+                    }
+                },
+
+                updateStats() {
+                    this.jsonBytes = new Blob([this.jsonInput]).size;
+                    this.CanL3Bytes = new Blob([this.CanL3Output]).size;
+                    // More accurate token estimation (avg 3.5 chars per token for GPT)
+                    this.jsonTokens = Math.ceil(this.jsonInput.length / 3.5);
+                    this.CanL3Tokens = Math.ceil(this.CanL3Output.length / 3.5);
+
+                    if (this.jsonBytes > 0 && this.CanL3Bytes > 0) {
+                        this.savings.bytes = Math.max(0, Math.round(((this.jsonBytes - this.CanL3Bytes) / this.jsonBytes) * 100));
+                        this.savings.tokens = Math.max(0, Math.round(((this.jsonTokens - this.CanL3Tokens) / this.jsonTokens) * 100));
+                    } else {
+                        this.savings = { bytes: 0, tokens: 0 };
+                    }
+                },
+
+                setJSONFormat(format) {
+                    this.jsonFormat = format;
+                    this.updateJSONFormat();
+                },
+
+                updateJSONFormat() {
+                    try {
+                        const data = JSON.parse(this.jsonInput);
+                        if (this.jsonFormat === 'compact') {
+                            this.jsonInput = JSON.stringify(data);
+                        } else {
+                            this.jsonInput = JSON.stringify(data, null, 2);
+                        }
+                        this.updateStats();
+                        this.updateJSONComparison();
+                        this.jsonToCanL3(); // Re-convert when format changes
+                    } catch (e) {
+                        // If JSON is invalid, don't change format
+                    }
+                },
+
+                updateJSONComparison() {
+                    try {
+                        const data = JSON.parse(this.jsonInput);
+
+                        // Generate compact JSON
+                        this.compactJSON = JSON.stringify(data);
+                        this.compactJSONBytes = new Blob([this.compactJSON]).size;
+                        this.compactJSONTokens = Math.ceil(this.compactJSON.length / 3.5);
+
+                        // Generate pretty JSON
+                        this.prettyJSON = JSON.stringify(data, null, 2);
+                        this.prettyJSONBytes = new Blob([this.prettyJSON]).size;
+                        this.prettyJSONTokens = Math.ceil(this.prettyJSON.length / 3.5);
+
+                        // Calculate savings (compact vs pretty)
+                        if (this.prettyJSONBytes > 0 && this.compactJSONBytes > 0) {
+                            this.compactSavings.bytes = Math.max(0, Math.round(((this.prettyJSONBytes - this.compactJSONBytes) / this.prettyJSONBytes) * 100));
+                            this.compactSavings.tokens = Math.max(0, Math.round(((this.prettyJSONTokens - this.compactJSONTokens) / this.prettyJSONTokens) * 100));
+                        } else {
+                            this.compactSavings = { bytes: 0, tokens: 0 };
+                        }
+                    } catch (e) {
+                        this.compactJSON = '';
+                        this.prettyJSON = '';
+                        this.compactJSONBytes = 0;
+                        this.prettyJSONBytes = 0;
+                        this.compactJSONTokens = 0;
+                        this.prettyJSONTokens = 0;
+                        this.compactSavings = { bytes: 0, tokens: 0 };
+                    }
+                },
+
+                copyToClipboard(text) {
+                    navigator.clipboard.writeText(text);
+                    // Determine which copy state to update based on context
+                    if (text === this.compactJSON) {
+                        this.copiedCompact = true;
+                        setTimeout(() => this.copiedCompact = false, 2000);
+                    } else if (text === this.prettyJSON) {
+                        this.copiedPretty = true;
+                        setTimeout(() => this.copiedPretty = false, 2000);
+                    } else {
+                        this.copied = true;
+                        setTimeout(() => this.copied = false, 2000);
+                    }
+                },
+
+                clearAll() {
+                    this.jsonInput = '';
+                    this.CanL3Output = '';
+                    this.compactJSON = '';
+                    this.prettyJSON = '';
+                    this.error = '';
+                    this.updateStats();
+                    this.updateJSONComparison();
+                },
+
+                generateLineNumbers(text) {
+                    if (!text) return '<div style="color:#334155">1</div>';
+                    const lines = text.split('\n').length;
+                    let html = '';
+                    for (let i = 1; i <= lines; i++) {
+                        html += `<div>${i}</div>`;
+                    }
+                    return html;
+                },
+
+                updateLineNumbers() {
+                    // Trigger Alpine to recompute line numbers
+                    this.$nextTick(() => {
+                        // Force update
+                    });
+                },
+
+                syncScroll(event, editor) {
+                    // Sync scroll of line numbers with textarea
+                    const textarea = event.target;
+                    const lineNumbers = textarea.previousElementSibling;
+                    if (lineNumbers) {
+                        lineNumbers.scrollTop = textarea.scrollTop;
+                    }
+                },
+
+                async loadExample(type) {
+                    this.currentExample = type;
+
+                    // Auto-enable schema-first for schema-first examples
+                    if (type.startsWith('schema-')) {
+                        this.schemaFirst = true;
+                    }
+
+                    // Priority: Load from JSON files for large datasets
+                    const jsonFiles = ['small', 'users', 'employees', 'products', 'transactions', 'apiLogs', 'config',
+                                       'ecommerce', 'api', 'logs', 'nested', 'analytics', 'timeseries', 'catalog', 'social', 'large',
+                                       'schema-teams', 'schema-products', 'schema-employees'];
+
+                    if (jsonFiles.includes(type)) {
+                        try {
+                            // Check cache first
+                            if (!this.fullDataCache[type]) {
+                                const response = await fetch(`json/${type}.json`);
+                                if (response.ok) {
+                                    this.fullDataCache[type] = await response.json();
+                                }
+                            }
+
+                            if (this.fullDataCache[type]) {
+                                this.applyRecordCount(this.fullDataCache[type]);
+                                return;
+                            }
+                        } catch (error) {
+                            console.warn(`Could not load ${type}.json:`, error.message);
+                            // Fall through to inline examples
+                        }
+                    }
+
+                    // Fallback: Inline examples for compatibility
+                    const examples = {
+                        small: `{
+  "name": "Alice Smith",
+  "age": 30,
+  "email": "alice@example.com",
+  "active": true
+}`,
+                        users: `{
+  "users": [
+    {
+      "id": 1001,
+      "username": "alice_smith",
+      "email": "alice@company.com",
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "age": 30,
+      "role": "admin",
+      "department": "Engineering",
+      "verified": true,
+      "lastLogin": "2025-11-04T10:30:00Z",
+      "permissions": ["read", "write", "delete", "admin"],
+      "metadata": {
+        "created": "2025-01-15",
+        "lastModified": "2025-11-01",
+        "loginCount": 547
+      }
+    },
+    {
+      "id": 1002,
+      "username": "bob_jones",
+      "email": "bob@company.com",
+      "firstName": "Bob",
+      "lastName": "Jones",
+      "age": 25,
+      "role": "developer",
+      "department": "Engineering",
+      "verified": true,
+      "lastLogin": "2025-11-04T09:15:00Z",
+      "permissions": ["read", "write"],
+      "metadata": {
+        "created": "2025-03-20",
+        "lastModified": "2025-10-30",
+        "loginCount": 423
+      }
+    },
+    {
+      "id": 1003,
+      "username": "carol_white",
+      "email": "carol@company.com",
+      "firstName": "Carol",
+      "lastName": "White",
+      "age": 35,
+      "role": "manager",
+      "department": "Product",
+      "verified": true,
+      "lastLogin": "2025-11-03T16:45:00Z",
+      "permissions": ["read", "write", "approve"],
+      "metadata": {
+        "created": "2023-11-10",
+        "lastModified": "2025-11-02",
+        "loginCount": 892
+      }
+    }
+  ]
+}`,
+                        ecommerce: `{
+  "store": {
+    "name": "TechMart Premium Store",
+    "currency": "USD",
+    "categories": ["Electronics", "Accessories", "Computers", "Gaming"]
+  },
+  "products": [
+    {
+      "sku": "LAPTOP-PRO-15-2025",
+      "name": "Professional Laptop 15 inch Ultra",
+      "description": "High-performance laptop with 16GB RAM, 512GB SSD, Intel i7 processor",
+      "price": 1299.99,
+      "comparePrice": 1599.99,
+      "stock": 15,
+      "category": "Computers",
+      "rating": 4.8,
+      "reviews": 234,
+      "tags": ["bestseller", "premium", "business", "portable"],
+      "specs": {
+        "processor": "Intel Core i7 11th Gen",
+        "ram": "16GB DDR4 3200MHz",
+        "storage": "512GB NVMe PCIe 4.0 SSD",
+        "screen": "15.6 inch FHD IPS",
+        "graphics": "Intel Iris Xe",
+        "weight": "1.8 kg",
+        "battery": "Up to 12 hours",
+        "ports": "2x USB-C, 2x USB-A, HDMI, Audio"
+      },
+      "inStock": true,
+      "featured": true
+    },
+    {
+      "sku": "MOUSE-WIRELESS-PRO",
+      "name": "Wireless Ergonomic Mouse Pro",
+      "description": "Premium wireless mouse with 6 programmable buttons and precision tracking",
+      "price": 29.99,
+      "comparePrice": 39.99,
+      "stock": 150,
+      "category": "Accessories",
+      "rating": 4.5,
+      "reviews": 567,
+      "tags": ["ergonomic", "wireless", "bestseller", "gaming"],
+      "specs": {
+        "dpi": "3200 adjustable",
+        "connectivity": "USB Receiver + Bluetooth 5.0",
+        "battery": "Rechargeable Li-ion",
+        "buttons": 6,
+        "color": "Black"
+      },
+      "inStock": true,
+      "featured": false
+    },
+    {
+      "sku": "KB-MECHANICAL-RGB-FULL",
+      "name": "Mechanical RGB Keyboard Full Size",
+      "description": "Gaming mechanical keyboard with RGB per-key backlight and Cherry MX switches",
+      "price": 89.99,
+      "comparePrice": 119.99,
+      "stock": 45,
+      "category": "Accessories",
+      "rating": 4.7,
+      "reviews": 892,
+      "tags": ["gaming", "rgb", "mechanical", "premium"],
+      "specs": {
+        "switchType": "Cherry MX Blue",
+        "connectivity": "USB-C detachable",
+        "backlight": "RGB per-key customizable",
+        "layout": "Full size 104 keys",
+        "features": "Anti-ghosting, N-key rollover"
+      },
+      "inStock": true,
+      "featured": true
+    }
+  ]
+}`,
+                        api: `{
+  "status": "success",
+  "timestamp": 1699456789123,
+  "requestId": "req_abc123xyz789def456",
+  "apiVersion": "v2.1",
+  "data": {
+    "total": 1247,
+    "page": 1,
+    "pageSize": 25,
+    "hasMore": true,
+    "filters": {
+      "category": "technology",
+      "dateFrom": "2025-10-01",
+      "dateTo": "2025-11-04"
+    },
+    "results": [
+      {
+        "id": "article_12345",
+        "title": "Introduction to Modern Serialization Formats",
+        "slug": "modern-serialization-formats",
+        "author": {
+          "id": "author_789",
+          "name": "Alice Smith",
+          "username": "alice_tech",
+          "verified": true,
+          "followers": 15234
+        },
+        "content": "In this comprehensive guide, we'll explore modern approaches to data serialization...",
+        "excerpt": "Explore modern serialization formats and their benefits for LLM applications",
+        "tags": ["tutorial", "serialization", "llm", "data-formats"],
+        "published": "2025-10-15T10:00:00Z",
+        "updated": "2025-10-20T14:30:00Z",
+        "views": 15234,
+        "likes": 892,
+        "comments": 45,
+        "bookmarks": 234,
+        "shares": 67,
+        "readingTime": 8,
+        "featured": true
+      },
+      {
+        "id": "article_12346",
+        "title": "Advanced Query Patterns for Data Access",
+        "slug": "advanced-query-patterns",
+        "author": {
+          "id": "author_456",
+          "name": "Bob Johnson",
+          "username": "bob_dev",
+          "verified": true,
+          "followers": 8934
+        },
+        "content": "Learn how to leverage powerful query APIs for efficient data access...",
+        "excerpt": "Master advanced querying techniques with JSONPath-like syntax",
+        "tags": ["advanced", "query", "tutorial", "api"],
+        "published": "2025-10-20T14:30:00Z",
+        "updated": "2025-10-25T09:15:00Z",
+        "views": 8934,
+        "likes": 456,
+        "comments": 23,
+        "bookmarks": 123,
+        "shares": 34,
+        "readingTime": 12,
+        "featured": false
+      }
+    ]
+  },
+  "meta": {
+    "processingTime": 45,
+    "cacheHit": true,
+    "dataCenter": "us-east-1",
+    "version": "1.0.5"
+  }
+}`,
+                        config: `{
+  "application": {
+    "name": "ProductionApp",
+    "version": "2.5.3",
+    "environment": "production",
+    "debug": false,
+    "port": 8080,
+    "host": "0.0.0.0",
+    "baseUrl": "https://api.example.com"
+  },
+  "database": {
+    "primary": {
+      "driver": "postgresql",
+      "host": "db-primary.example.com",
+      "port": 5432,
+      "database": "myapp_prod",
+      "username": "app_user",
+      "password": "secure_password_here",
+      "maxConnections": 100,
+      "minConnections": 10,
+      "connectionTimeout": 30000,
+      "idleTimeout": 10000,
+      "ssl": true,
+      "sslMode": "require"
+    },
+    "replica": {
+      "driver": "postgresql",
+      "host": "db-replica.example.com",
+      "port": 5432,
+      "database": "myapp_prod",
+      "username": "app_readonly",
+      "password": "readonly_password",
+      "maxConnections": 50,
+      "ssl": true
+    }
+  },
+  "cache": {
+    "enabled": true,
+    "provider": "redis",
+    "connection": {
+      "host": "cache.example.com",
+      "port": 6379,
+      "db": 0,
+      "password": "cache_password",
+      "ttl": 3600,
+      "maxMemory": "2gb",
+      "evictionPolicy": "allkeys-lru"
+    },
+    "keyPrefix": "myapp:"
+  },
+  "features": {
+    "authentication": {
+      "enabled": true,
+      "providers": ["local", "oauth", "saml"],
+      "sessionTimeout": 86400,
+      "refreshTokenEnabled": true
+    },
+    "twoFactor": {
+      "enabled": true,
+      "methods": ["totp", "sms"],
+      "required": false
+    },
+    "rateLimit": {
+      "enabled": true,
+      "maxRequests": 1000,
+      "window": 60,
+      "blockDuration": 300
+    }
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "outputs": ["console", "file", "cloudwatch"],
+    "file": {
+      "path": "/var/log/app",
+      "maxSize": "100mb",
+      "maxFiles": 10,
+      "compress": true
+    }
+  }
+}`,
+                        logs: `{
+  "logs": [
+    {
+      "timestamp": "2025-11-04T10:15:30.123Z",
+      "level": "info",
+      "service": "api-gateway",
+      "message": "Request processed successfully",
+      "requestId": "req_abc123def456",
+      "userId": "user_789",
+      "endpoint": "/api/v1/users",
+      "method": "GET",
+      "statusCode": 200,
+      "responseTime": 45,
+      "ip": "192.168.1.100",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    },
+    {
+      "timestamp": "2025-11-04T10:16:45.456Z",
+      "level": "warn",
+      "service": "database",
+      "message": "Slow query detected",
+      "query": "SELECT * FROM users WHERE created > DATE_SUB(NOW(), INTERVAL 30 DAY)",
+      "duration": 1250,
+      "threshold": 1000,
+      "database": "primary",
+      "rowsAffected": 5678
+    },
+    {
+      "timestamp": "2025-11-04T10:17:00.789Z",
+      "level": "error",
+      "service": "payment-processor",
+      "message": "Payment processing failed",
+      "errorCode": "CARD_DECLINED",
+      "errorDetails": "Insufficient funds",
+      "orderId": "ord_789xyz123",
+      "amount": 99.99,
+      "currency": "USD",
+      "customerId": "cust_456",
+      "retryable": true,
+      "attemptNumber": 1
+    },
+    {
+      "timestamp": "2025-11-04T10:18:15.234Z",
+      "level": "info",
+      "service": "cache",
+      "message": "Cache miss - fetching from database",
+      "key": "user:profile:123456",
+      "ttl": 3600,
+      "fallback": "database-query",
+      "queryTime": 23
+    },
+    {
+      "timestamp": "2025-11-04T10:19:30.567Z",
+      "level": "info",
+      "service": "authentication",
+      "message": "User login successful",
+      "userId": "user_789",
+      "username": "alice_smith",
+      "loginMethod": "oauth2",
+      "provider": "google",
+      "ipAddress": "203.0.113.42",
+      "country": "US",
+      "city": "San Francisco",
+      "twoFactorUsed": true
+    }
+  ]
+}`,
+                        nested: `{
+  "organization": {
+    "name": "TechCorp International",
+    "founded": 2015,
+    "headquarters": {
+      "country": "USA",
+      "address": {
+        "street": "123 Tech Boulevard",
+        "suite": "Suite 500",
+        "city": "San Francisco",
+        "state": "California",
+        "zipCode": "94105",
+        "coordinates": {
+          "latitude": 37.7749,
+          "longitude": -122.4194,
+          "accuracy": "high"
+        }
+      },
+      "contact": {
+        "phone": "+1-415-555-0100",
+        "fax": "+1-415-555-0101",
+        "email": "info@techcorp.com",
+        "support": {
+          "email": "support@techcorp.com",
+          "phone": "+1-415-555-0200",
+          "hours": "24/7"
+        }
+      }
+    },
+    "departments": [
+      {
+        "id": "dept_engineering",
+        "name": "Engineering",
+        "headCount": 150,
+        "budget": 15000000,
+        "manager": {
+          "employeeId": "E001",
+          "name": "Alice Johnson",
+          "title": "VP of Engineering",
+          "contact": {
+            "email": "alice.j@techcorp.com",
+            "phone": "+1-415-555-1001"
+          }
+        },
+        "teams": [
+          {
+            "name": "Backend Infrastructure",
+            "size": 25,
+            "technologies": ["Node.js", "Python", "Go", "PostgreSQL", "Redis"],
+            "projects": ["API Gateway", "Microservices", "Data Pipeline"]
+          },
+          {
+            "name": "Frontend Platform",
+            "size": 20,
+            "technologies": ["React", "TypeScript", "Next.js", "Tailwind CSS"],
+            "projects": ["Web App", "Mobile Web", "Component Library"]
+          }
+        ]
+      }
+    ]
+  }
+}`,
+                        analytics: `{
+  "analytics": {
+    "reportId": "analytics_2025_10",
+    "period": "October 2025",
+    "generated": "2025-11-04T00:00:00Z",
+    "summary": {
+      "totalUsers": 45678,
+      "activeUsers": 23456,
+      "newUsers": 1234,
+      "returningUsers": 22222,
+      "churnRate": 3.2,
+      "growthRate": 5.4
+    },
+    "engagement": {
+      "pageViews": 567890,
+      "uniquePageViews": 234567,
+      "sessions": 123456,
+      "avgSessionDuration": 180,
+      "bounceRate": 42.5,
+      "pagesPerSession": 3.8
+    },
+    "conversions": {
+      "totalConversions": 3456,
+      "conversionRate": 2.8,
+      "goalCompletions": {
+        "signup": 2345,
+        "purchase": 890,
+        "subscription": 221
+      },
+      "revenue": {
+        "total": 234567.89,
+        "subscriptions": 189234.50,
+        "oneTimePurchases": 45333.39
+      }
+    },
+    "topPages": [
+      {
+        "path": "/dashboard",
+        "title": "Dashboard",
+        "views": 45678,
+        "uniqueViews": 23456,
+        "avgTimeOnPage": 120,
+        "bounceRate": 35.2
+      },
+      {
+        "path": "/products",
+        "title": "Products",
+        "views": 34567,
+        "uniqueViews": 18934,
+        "avgTimeOnPage": 90,
+        "bounceRate": 45.8
+      },
+      {
+        "path": "/pricing",
+        "title": "Pricing",
+        "views": 23456,
+        "uniqueViews": 15678,
+        "avgTimeOnPage": 60,
+        "bounceRate": 38.5
+      }
+    ],
+    "demographics": {
+      "byCountry": [
+        { "country": "United States", "users": 15678, "percentage": 34.3, "revenue": 123456.78 },
+        { "country": "United Kingdom", "users": 8934, "percentage": 19.6, "revenue": 67890.12 },
+        { "country": "Germany", "users": 6789, "percentage": 14.9, "revenue": 45678.90 },
+        { "country": "France", "users": 5432, "percentage": 11.9, "revenue": 34567.89 },
+        { "country": "Canada", "users": 4321, "percentage": 9.5, "revenue": 28901.23 },
+        { "country": "Other", "users": 4524, "percentage": 9.8, "revenue": 34072.97 }
+      ]
+    }
+  }
+}`,
+                        timeseries: `{
+  "sensor": {
+    "id": "sensor_temp_01",
+    "name": "Temperature Sensor - Server Room A",
+    "location": "Building 1, Floor 3, Room A",
+    "type": "environmental",
+    "units": {
+      "temperature": "celsius",
+      "humidity": "percent",
+      "pressure": "hPa"
+    }
+  },
+  "measurements": [
+    { "t": 1699123200, "temp": 22.5, "hum": 45, "press": 1013.25, "status": "normal" },
+    { "t": 1699123260, "temp": 22.7, "hum": 46, "press": 1013.20, "status": "normal" },
+    { "t": 1699123320, "temp": 22.6, "hum": 45, "press": 1013.22, "status": "normal" },
+    { "t": 1699123380, "temp": 23.1, "hum": 47, "press": 1013.18, "status": "normal" },
+    { "t": 1699123440, "temp": 23.3, "hum": 48, "press": 1013.15, "status": "normal" },
+    { "t": 1699123500, "temp": 23.5, "hum": 49, "press": 1013.12, "status": "normal" },
+    { "t": 1699123560, "temp": 23.8, "hum": 50, "press": 1013.10, "status": "warning" },
+    { "t": 1699123620, "temp": 24.0, "hum": 51, "press": 1013.08, "status": "warning" },
+    { "t": 1699123680, "temp": 24.2, "hum": 52, "press": 1013.05, "status": "warning" },
+    { "t": 1699123740, "temp": 24.5, "hum": 53, "press": 1013.02, "status": "alert" }
+  ],
+  "statistics": {
+    "avgTemperature": 23.42,
+    "maxTemperature": 24.5,
+    "minTemperature": 22.5,
+    "avgHumidity": 48.6,
+    "dataPoints": 10
+  },
+  "alerts": [
+    {
+      "timestamp": 1699123740,
+      "severity": "warning",
+      "type": "temperature_high",
+      "message": "Temperature above safe threshold",
+      "value": 24.5,
+      "threshold": 24.0,
+      "action": "notification_sent"
+    }
+  ]
+}`,
+                        catalog: `{
+  "productCatalog": {
+    "version": "3.2",
+    "lastUpdated": "2025-11-04T00:00:00Z",
+    "totalProducts": 3,
+    "categories": [
+      {
+        "id": "cat_electronics",
+        "name": "Electronics",
+        "slug": "electronics",
+        "description": "Electronic devices, computers, and gadgets",
+        "parentCategory": null,
+        "displayOrder": 1,
+        "active": true,
+        "seoMetadata": {
+          "title": "Electronics - Best Deals on Tech",
+          "description": "Shop the latest electronics",
+          "keywords": ["electronics", "computers", "gadgets"]
+        },
+        "products": [
+          {
+            "productId": "prod_laptop_premium_001",
+            "sku": "LAPTOP-PREM-15-BLK",
+            "name": "Premium Laptop 15 inch Professional Edition",
+            "shortDescription": "High-performance laptop for professionals",
+            "longDescription": "This premium laptop combines power and portability with cutting-edge specifications designed for demanding professional workflows...",
+            "brand": "TechBrand International",
+            "manufacturer": "TechManufacturing Co.",
+            "price": {
+              "amount": 1499.99,
+              "currency": "USD",
+              "compareAtPrice": 1799.99,
+              "onSale": true,
+              "discountPercentage": 17,
+              "taxIncluded": false
+            },
+            "inventory": {
+              "inStock": true,
+              "quantity": 25,
+              "warehouse": "US-WEST-1",
+              "reservedQuantity": 5,
+              "availableQuantity": 20,
+              "lowStockThreshold": 10,
+              "reorderPoint": 15
+            },
+            "specifications": {
+              "processor": {
+                "brand": "Intel",
+                "model": "Core i7 11th Generation",
+                "cores": 8,
+                "threads": 16,
+                "baseSpeed": "2.8 GHz",
+                "boostSpeed": "4.7 GHz"
+              },
+              "memory": {
+                "size": "16GB",
+                "type": "DDR4",
+                "speed": "3200 MHz",
+                "slots": 2,
+                "maxSupported": "32GB"
+              },
+              "storage": {
+                "type": "SSD",
+                "technology": "NVMe PCIe 4.0",
+                "capacity": "512GB",
+                "expandable": true,
+                "additionalSlots": 1
+              },
+              "display": {
+                "size": "15.6 inches",
+                "resolution": "1920x1080",
+                "panelType": "IPS",
+                "refreshRate": "60 Hz",
+                "brightness": "300 nits",
+                "touchscreen": false
+              },
+              "graphics": {
+                "type": "Integrated",
+                "model": "Intel Iris Xe Graphics",
+                "dedicatedMemory": "Shared"
+              },
+              "connectivity": {
+                "wifi": "Wi-Fi 6 (802.11ax)",
+                "bluetooth": "5.2",
+                "ethernet": "Gigabit",
+                "ports": ["2x USB-C Thunderbolt 4", "2x USB-A 3.2", "HDMI 2.0", "Audio Jack", "SD Card Reader"]
+              },
+              "battery": {
+                "capacity": "75 Wh",
+                "estimatedLife": "Up to 12 hours",
+                "chargingTime": "90 minutes to 80%",
+                "fastCharging": true
+              },
+              "physical": {
+                "weight": "1.8 kg",
+                "dimensions": {
+                  "width": "35.8 cm",
+                  "depth": "24.5 cm",
+                  "height": "1.8 cm"
+                },
+                "material": "Aluminum unibody",
+                "color": "Space Gray"
+              },
+              "operating System": {
+                "name": "Windows 11 Pro",
+                "version": "22H2",
+                "license": "OEM"
+              }
+            },
+            "media": {
+              "images": [
+                { "url": "laptop_front.jpg", "alt": "Front view", "order": 1 },
+                { "url": "laptop_side.jpg", "alt": "Side view", "order": 2 },
+                { "url": "laptop_open.jpg", "alt": "Open view", "order": 3 },
+                { "url": "laptop_ports.jpg", "alt": "Ports detail", "order": 4 }
+              ],
+              "videos": [
+                { "url": "laptop_review.mp4", "type": "review", "duration": 180 }
+              ]
+            },
+            "reviews": {
+              "averageRating": 4.8,
+              "totalReviews": 342,
+              "distribution": {
+                "5star": 280,
+                "4star": 45,
+                "3star": 12,
+                "2star": 3,
+                "1star": 2
+              },
+              "verifiedPurchases": 298
+            },
+            "tags": ["bestseller", "premium", "business", "portable", "powerful"],
+            "relatedProducts": ["prod_laptop_bag_001", "prod_mouse_wireless_001", "prod_laptop_stand_001"],
+            "warrantyInfo": {
+              "duration": "2 years",
+              "type": "manufacturer",
+              "extendedAvailable": true,
+              "extendedPrice": 199.99
+            }
+          }
+        ]
+      }
+    ]
+  }
+}`,
+                        social: `{
+  "socialFeed": {
+    "feedType": "timeline",
+    "userId": "user_main_123",
+    "fetchedAt": "2025-11-04T10:00:00Z",
+    "hasMore": true,
+    "nextCursor": "cursor_abc123xyz",
+    "posts": [
+      {
+        "postId": "post_67890",
+        "type": "original",
+        "author": {
+          "userId": "user_456",
+          "username": "tech_enthusiast_2025",
+          "displayName": "Tech Enthusiast",
+          "profileImage": "https://cdn.example.com/avatars/user_456.jpg",
+          "verified": true,
+          "followerCount": 12345,
+          "followingCount": 892,
+          "bio": "Technology enthusiast | Developer | Open Source contributor"
+        },
+        "content": {
+          "text": "Just discovered CanL3 - an amazing token-optimized format for LLM applications! 38% smaller than JSON. Perfect for reducing API costs. Check it out! #CanL3 #LLM #AI #CostOptimization",
+          "language": "en",
+          "hashtags": ["CanL3", "LLM", "AI", "CostOptimization"],
+          "mentions": ["@CanL3_official"],
+          "urls": ["https://CanL3.dev", "https://github.com/CanL3-dev/CanL3"]
+        },
+        "media": [],
+        "timestamp": "2025-11-04T09:30:00Z",
+        "metrics": {
+          "views": 5678,
+          "likes": 234,
+          "retweets": 45,
+          "replies": 12,
+          "bookmarks": 67,
+          "shares": 23,
+          "engagementRate": 6.7
+        },
+        "visibility": "public",
+        "allowReplies": true,
+        "isPinned": false
+      },
+      {
+        "postId": "post_67891",
+        "type": "retweet",
+        "originalAuthor": {
+          "userId": "user_101",
+          "username": "data_science_pro",
+          "displayName": "Data Science Professional",
+          "verified": true
+        },
+        "retweetedBy": {
+          "userId": "user_202",
+          "username": "ml_researcher",
+          "displayName": "ML Researcher"
+        },
+        "content": {
+          "text": "Working with massive datasets? CanL3's streaming API processes multi-GB files with constant memory usage. Game changer for data pipelines! ðŸš€",
+          "hashtags": ["DataScience", "BigData", "CanL3", "Streaming"]
+        },
+        "timestamp": "2025-11-04T08:45:00Z",
+        "metrics": {
+          "views": 2345,
+          "likes": 89,
+          "retweets": 12,
+          "replies": 5
+        }
+      }
+    ]
+  }
+}`,
+                        large: `{
+  "companyDatabase": {
+    "organizationInfo": {
+      "companyName": "GlobalTech Solutions International Inc.",
+      "registrationNumber": "REG-2015-US-12345",
+      "taxId": "TAX-US-67890",
+      "founded": "2015-03-15",
+      "legalEntity": "C-Corporation",
+      "headquarters": {
+        "country": "United States",
+        "city": "San Francisco",
+        "fullAddress": "123 Technology Boulevard, Suite 500, San Francisco, CA 94105, USA"
+      }
+    },
+    "employees": [
+      {
+        "employeeId": "EMP-0001",
+        "personalInfo": {
+          "firstName": "Alice",
+          "middleName": "Marie",
+          "lastName": "Anderson",
+          "dateOfBirth": "1990-05-15",
+          "nationality": "American",
+          "ssn": "***-**-1234"
+        },
+        "contactInfo": {
+          "email": "alice.anderson@globaltech.com",
+          "personalEmail": "alice.m.anderson@gmail.com",
+          "phone": {
+            "work": "+1-415-555-1001",
+            "mobile": "+1-415-555-2001",
+            "emergency": "+1-415-555-3001"
+          },
+          "address": {
+            "street": "456 Residential Street",
+            "apt": "Apt 12B",
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94110",
+            "country": "USA"
+          }
+        },
+        "employment": {
+          "department": "Engineering",
+          "position": "Senior Software Engineer",
+          "level": "L6",
+          "employmentType": "Full-time",
+          "hireDate": "2018-03-15",
+          "startDate": "2018-04-01",
+          "probationEndDate": "2018-07-01",
+          "location": "San Francisco Office",
+          "remote": false,
+          "managerId": "EMP-M001"
+        },
+        "compensation": {
+          "baseSalary": 145000,
+          "currency": "USD",
+          "paySchedule": "bi-weekly",
+          "bonusEligible": true,
+          "targetBonus": 20,
+          "stockOptions": {
+            "granted": 10000,
+            "vested": 6250,
+            "vestingSchedule": "4-year with 1-year cliff"
+          },
+          "benefits": {
+            "healthInsurance": "Premium PPO",
+            "dentalInsurance": "Full coverage",
+            "visionInsurance": "Basic",
+            "retirement401k": {
+              "contribution": 6,
+              "employerMatch": 4,
+              "vestingSchedule": "immediate"
+            },
+            "paidTimeOff": {
+              "vacation": 20,
+              "sick": 10,
+              "personal": 5
+            }
+          }
+        },
+        "skills": ["JavaScript", "TypeScript", "React", "Node.js", "PostgreSQL", "AWS", "Docker", "Kubernetes", "Python"],
+        "certifications": [
+          {
+            "name": "AWS Solutions Architect Professional",
+            "issuer": "Amazon Web Services",
+            "issueDate": "2023-06-15",
+            "expiryDate": "2026-06-15",
+            "credentialId": "AWS-CERT-12345"
+          },
+          {
+            "name": "Kubernetes Administrator (CKA)",
+            "issuer": "Cloud Native Computing Foundation",
+            "issueDate": "2025-01-20",
+            "expiryDate": "2027-01-20",
+            "credentialId": "CKA-CERT-67890"
+          }
+        ],
+        "projects": [
+          {
+            "projectId": "PROJ-ALPHA",
+            "role": "Technical Lead",
+            "startDate": "2025-01-15",
+            "endDate": null,
+            "status": "active",
+            "allocation": 100
+          },
+          {
+            "projectId": "PROJ-BETA",
+            "role": "Senior Developer",
+            "startDate": "2023-06-01",
+            "endDate": "2025-01-10",
+            "status": "completed",
+            "allocation": 50
+          }
+        ],
+        "performance": {
+          "currentRating": 4.8,
+          "lastReviewDate": "2025-10-01",
+          "nextReviewDate": "2026-04-01",
+          "goals": [
+            {
+              "goalId": "GOAL-001",
+              "description": "Lead Project Alpha to successful completion",
+              "dueDate": "2025-12-31",
+              "status": "on-track",
+              "progress": 75
+            },
+            {
+              "goalId": "GOAL-002",
+              "description": "Mentor 3 junior engineers",
+              "dueDate": "2025-12-31",
+              "status": "ahead",
+              "progress": 90
+            }
+          ],
+          "achievements": [
+            "Shipped critical feature 2 weeks ahead of schedule",
+            "Reduced API response time by 40%",
+            "Mentored 5 engineers successfully"
+          ]
+        },
+        "directReports": ["EMP-0015", "EMP-0023", "EMP-0034"],
+        "reportsTo": "EMP-M001"
+      },
+      {
+        "employeeId": "EMP-0002",
+        "personalInfo": {
+          "firstName": "Bob",
+          "middleName": "James",
+          "lastName": "Brown",
+          "dateOfBirth": "1988-09-22",
+          "nationality": "American"
+        },
+        "contactInfo": {
+          "email": "bob.brown@globaltech.com",
+          "phone": {
+            "work": "+1-206-555-1002",
+            "mobile": "+1-206-555-2002"
+          }
+        },
+        "employment": {
+          "department": "Engineering",
+          "position": "Staff Software Engineer",
+          "level": "L7",
+          "employmentType": "Full-time",
+          "hireDate": "2016-01-10",
+          "location": "Seattle Office"
+        },
+        "compensation": {
+          "baseSalary": 175000,
+          "currency": "USD"
+        },
+        "skills": ["Python", "Go", "Rust", "Kubernetes", "PostgreSQL", "Redis", "Kafka", "System Design"],
+        "performance": {
+          "currentRating": 4.9,
+          "lastReviewDate": "2025-09-15"
+        },
+        "directReports": ["EMP-0012", "EMP-0019"]
+      },
+      {
+        "employeeId": "EMP-0003",
+        "personalInfo": {
+          "firstName": "Carol",
+          "lastName": "Chen",
+          "dateOfBirth": "1992-12-08",
+          "nationality": "American"
+        },
+        "contactInfo": {
+          "email": "carol.chen@globaltech.com",
+          "phone": {
+            "work": "+1-212-555-1003",
+            "mobile": "+1-212-555-2003"
+          }
+        },
+        "employment": {
+          "department": "Product Management",
+          "position": "Senior Product Manager",
+          "level": "L5",
+          "employmentType": "Full-time",
+          "hireDate": "2019-07-20",
+          "location": "New York Office"
+        },
+        "compensation": {
+          "baseSalary": 135000,
+          "currency": "USD"
+        },
+        "skills": ["Product Strategy", "User Research", "Analytics", "Roadmapping", "Agile", "Stakeholder Management"],
+        "performance": {
+          "currentRating": 4.7,
+          "lastReviewDate": "2025-10-10"
+        },
+        "directReports": []
+      }
+    ]
+  }
+}`,
+                        'schema-teams': `{
+  "teams": [
+    {
+      "id": 1,
+      "name": "Backend Infrastructure",
+      "projects": ["API Gateway", "Microservices", "Data Pipeline"],
+      "size": 25,
+      "technologies": ["Node.js", "Python", "Go", "PostgreSQL", "Redis"]
+    },
+    {
+      "id": 2,
+      "name": "Frontend Platform",
+      "projects": ["Web App", "Mobile Web", "Component Library"],
+      "size": 20,
+      "technologies": ["React", "TypeScript", "Javascript", "Next.js", "Tailwind CSS"]
+    }
+  ]
+}`,
+                        'schema-products': `{
+  "products": [
+    {
+      "id": 1,
+      "name": "Laptop Pro 15",
+      "price": 1299.99,
+      "category": "Electronics",
+      "features": ["16GB RAM", "512GB SSD", "Intel i7"],
+      "colors": ["Space Gray", "Silver", "Gold"]
+    },
+    {
+      "id": 2,
+      "name": "Wireless Mouse",
+      "price": 29.99,
+      "category": "Accessories",
+      "features": ["Ergonomic", "Wireless", "Long battery"],
+      "colors": ["Black", "White"]
+    },
+    {
+      "id": 3,
+      "name": "USB-C Hub",
+      "price": 49.99,
+      "category": "Accessories",
+      "features": ["7-in-1", "4K HDMI", "PD Charging"],
+      "colors": ["Silver"]
+    }
+  ]
+}`,
+                        'schema-employees': `{
+  "employees": [
+    {
+      "id": 101,
+      "name": "Alice Johnson",
+      "department": "Engineering",
+      "skills": ["JavaScript", "TypeScript", "React"],
+      "projects": ["Web Platform", "Mobile App"]
+    },
+    {
+      "id": 102,
+      "name": "Bob Smith",
+      "department": "Backend",
+      "skills": ["Python", "Go", "PostgreSQL"],
+      "projects": ["API Gateway", "Data Pipeline"]
+    },
+    {
+      "id": 103,
+      "name": "Carol Davis",
+      "department": "Frontend",
+      "skills": ["React", "Vue.js", "CSS"],
+      "projects": ["Web Platform", "Design System"]
+    },
+    {
+      "id": 104,
+      "name": "David Wilson",
+      "department": "DevOps",
+      "skills": ["Docker", "Kubernetes", "AWS"],
+      "projects": ["Infrastructure", "CI/CD"]
+    },
+    {
+      "id": 105,
+      "name": "Eva Martinez",
+      "department": "QA",
+      "skills": ["Testing", "Automation", "Jest"],
+      "projects": ["Testing Suite", "CI/CD"]
+    }
+  ]
+}`
+                    };
+
+                    // Apply the selected JSON format (compact or pretty)
+                    if (this.jsonFormat === 'compact') {
+                        this.jsonInput = JSON.stringify(JSON.parse(examples[type]));
+                    } else {
+                        this.jsonInput = examples[type];
+                    }
+                    this.jsonToCanL3();
+                },
+
+                applyRecordCount(fullData) {
+                    try {
+                        let limitedData = { ...fullData };
+
+                        // Find the largest array to determine max record count
+                        let maxArrayLength = 1;
+                        for (const key in fullData) {
+                            if (Array.isArray(fullData[key]) && fullData[key].length > 0) {
+                                maxArrayLength = Math.max(maxArrayLength, fullData[key].length);
+                            }
+                        }
+                        this.maxRecordCount = maxArrayLength;
+
+                        // Always reset to maximum when loading new example
+                        this.recordCount = this.maxRecordCount;
+
+                        // Find array fields and limit them
+                        for (const key in limitedData) {
+                            if (Array.isArray(limitedData[key]) && limitedData[key].length > 0) {
+                                limitedData[key] = limitedData[key].slice(0, this.recordCount);
+                            }
+                        }
+
+                        // Apply the selected JSON format (compact or pretty)
+                        if (this.jsonFormat === 'compact') {
+                            this.jsonInput = JSON.stringify(limitedData);
+                        } else {
+                            this.jsonInput = JSON.stringify(limitedData, null, 2);
+                        }
+                        this.updateStats();
+                        this.updateJSONComparison();
+                        this.jsonToCanL3();
+                    } catch (error) {
+                        console.error('Error applying record count:', error);
+                    }
+                },
+
+                updateRecordCount() {
+                    try {
+                        if (this.fullDataCache[this.currentExample]) {
+                            let limitedData = { ...this.fullDataCache[this.currentExample] };
+
+                            // Find array fields and limit them by current recordCount
+                            for (const key in limitedData) {
+                                if (Array.isArray(limitedData[key]) && limitedData[key].length > 0) {
+                                    limitedData[key] = limitedData[key].slice(0, this.recordCount);
+                                }
+                            }
+
+                            // Apply the selected JSON format (compact or pretty)
+                            if (this.jsonFormat === 'compact') {
+                                this.jsonInput = JSON.stringify(limitedData);
+                            } else {
+                                this.jsonInput = JSON.stringify(limitedData, null, 2);
+                            }
+                            this.updateStats();
+                            this.updateJSONComparison();
+                            this.jsonToCanL3();
+                        }
+                    } catch (error) {
+                        console.error('Error updating record count:', error);
+                    }
+                }
+            }
+        }
+
+  </script>
+
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-slate-50">
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- Brand -->
+          <div class="col-span-1 md:col-span-2">
+            <div class="flex items-center gap-2 mb-4">
+              <div
+                class="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center"
+              >
+                <span class="text-lg font-bold text-white">T</span>
+              </div>
+              <span class="text-xl font-bold text-slate-900">CanL3</span>
+            </div>
+            <p class="text-slate-600 mb-4 max-w-md">
+              Token-Optimized Notation Language.<br />
+              Reduce your LLM token costs by 32-45% while maintaining human
+              readability.
+            </p>
+            <div class="flex items-center gap-4 text-sm text-slate-500">
+              <span>Zero dependencies</span> <span>â€¢</span>
+              <span>100% test coverage</span> <span>â€¢</span>
+              <span>TypeScript native</span>
+            </div>
+            <div class="flex items-center gap-4 mt-4">
+              <a
+                href="https://github.com/CanL3-dev/CanL3"
+                target="_blank"
+                class="text-slate-400 hover:text-slate-600"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </a>
+              
+            </div>
+          </div>
+          <!-- Links -->
+          <div>
+            <h3 class="font-semibold text-slate-900 mb-4">Quick Links</h3>
+            <ul class="space-y-2 text-sm">
+              <li>
+                <a
+                  href="docs.html"
+                  class="text-slate-600 hover:text-slate-900 transition"
+                  >Documentation</a
+                >
+              </li>
+              <li>
+                <a
+                  href="examples.html"
+                  class="text-slate-600 hover:text-slate-900 transition"
+                  >Playground</a
+                >
+              </li>
+              <li>
+                <a
+                  href="cli.html"
+                  class="text-slate-600 hover:text-slate-900 transition"
+                  >Interactive CLI</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/CanL3-dev/CanL3"
+                  target="_blank"
+                  class="text-slate-600 hover:text-slate-900 transition"
+                  >GitHub</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.npmjs.com/package/CanL3"
+                  target="_blank"
+                  class="text-slate-600 hover:text-slate-900 transition"
+                  >npm Package</a
+                >
+              </li>
+            </ul>
+          </div>
+          <!-- GitHub Star Button -->
+          <div>
+            <h3 class="font-semibold text-slate-900 mb-4">Support</h3>
+            <a
+              href="https://github.com/CanL3-dev/CanL3"
+              target="_blank"
+              class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg hover:bg-slate-800 transition"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"
+                />
+              </svg>
+              Star on GitHub
+            </a>
+            <div class="mt-4">
+              <a
+                href="https://www.npmjs.com/package/CanL3"
+                target="_blank"
+                class="text-xs text-slate-500 hover:text-slate-700 transition"
+              >
+                <span class="font-semibold">npm:</span> CanL3
+              </a>
+            </div>
+            <div class="text-xs text-slate-500 mt-2">
+              <span class="font-semibold">Version:</span> 2.5.1
+            </div>
+          </div>
+        </div>
+        <div
+          class="border-t border-slate-200 mt-8 pt-8 text-center text-sm text-slate-500"
+        >
+          <p>&copy; 2025 CanL3. All rights reserved. Licensed under MIT.</p>
+        </div>
+      </div>
+    </footer>
+    <script
+      defer
+      src="https://analytics.caprover.ecostack.ee/script.js"
+      data-website-id="8e65fa51-ece0-41b7-85fa-43e1862047a6"
+    ></script>
+  </body>
+</html>
+
+

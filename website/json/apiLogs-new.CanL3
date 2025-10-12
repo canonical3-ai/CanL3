@@ -1,0 +1,38 @@
+#version 1.0
+root{logs,metrics,region,service,timeRange}:
+  logs[20]{duration,error,ip,level,method,path,query,reason,requestId,results,status,timestamp,userAgent,userId}:
+    45,-,192.168.1.100,INFO,GET,/api/v1/users/1234,-,-,req_abc123,-,200,"2025-11-04T12:00:12.234Z",Mozilla/5.0,user_1234
+    234,-,192.168.1.101,INFO,POST,/api/v1/orders,-,-,req_abc124,-,201,"2025-11-04T12:00:15.567Z",Mobile/iOS,user_5678
+    12,-,192.168.1.102,WARN,GET,/api/v1/products/999,-,-,req_abc125,-,404,"2025-11-04T12:00:18.890Z",curl/7.68.0,null
+    5234,Database timeout,192.168.1.103,ERROR,POST,/api/v1/payment,-,-,req_abc126,-,500,"2025-11-04T12:00:23.123Z",PostmanRuntime,user_9012
+    89,-,192.168.1.104,INFO,GET,/api/v1/search,laptop,-,req_abc127,-,200,"2025-11-04T12:00:28.456Z",Mozilla/5.0,user_3456
+    123,-,192.168.1.100,INFO,PUT,/api/v1/users/1234/profile,-,-,req_abc128,-,200,"2025-11-04T12:00:32.789Z",Mozilla/5.0,user_1234
+    56,-,192.168.1.105,INFO,DELETE,/api/v1/cart/items/789,-,-,req_abc129,-,204,"2025-11-04T12:00:38.012Z",Mobile/Android,user_7890
+    456,-,192.168.1.106,INFO,GET,/api/v1/recommendations,-,-,req_abc130,-,200,"2025-11-04T12:00:42.345Z",Mozilla/5.0,user_2345
+    34,-,192.168.1.107,WARN,POST,/api/v1/login,-,Invalid credentials,req_abc131,-,401,"2025-11-04T12:00:47.678Z",curl/7.68.0,null
+    678,-,192.168.1.108,INFO,GET,/api/v1/analytics/dashboard,-,-,req_abc132,-,200,"2025-11-04T12:00:52.901Z",Mozilla/5.0,user_admin
+    38,-,192.168.1.109,INFO,GET,/api/v1/users/5678,-,-,req_abc133,-,200,"2025-11-04T12:01:01.234Z",Mozilla/5.0,user_5678
+    189,-,192.168.1.110,INFO,POST,/api/v1/reviews,-,-,req_abc134,-,201,"2025-11-04T12:01:05.567Z",Mobile/iOS,user_6789
+    234,-,192.168.1.111,INFO,GET,/api/v1/orders/history,-,-,req_abc135,-,200,"2025-11-04T12:01:10.890Z",Mozilla/5.0,user_1234
+    30001,Payment gateway timeout,192.168.1.112,ERROR,POST,/api/v1/checkout,-,-,req_abc136,-,503,"2025-11-04T12:01:16.123Z",Mobile/Android,user_8901
+    123,-,192.168.1.113,INFO,GET,/api/v1/inventory,-,-,req_abc137,-,200,"2025-11-04T12:01:22.456Z",Python/3.9,service_inventory
+    67,-,192.168.1.114,INFO,PATCH,/api/v1/settings,-,-,req_abc138,-,200,"2025-11-04T12:01:28.789Z",Mozilla/5.0,user_admin
+    3,-,10.0.0.5,INFO,GET,/health,-,-,req_abc139,-,200,"2025-11-04T12:01:34.012Z",ELB-HealthChecker,null
+    8,-,10.0.0.6,INFO,GET,/metrics,-,-,req_abc140,-,200,"2025-11-04T12:01:40.345Z",Prometheus,null
+    456,-,54.187.123.45,INFO,POST,/api/v1/webhooks/stripe,-,-,req_abc141,-,200,"2025-11-04T12:01:46.678Z",Stripe/1.0,null
+    234,-,192.168.1.115,INFO,GET,/api/v1/users/search,-,-,req_abc142,45,200,"2025-11-04T12:01:52.901Z",Mozilla/5.0,user_admin
+  metrics{avgDuration,errorCount,p50Duration,p95Duration,p99Duration,successRate,topEndpoints,totalRequests,uniqueIPs,uniqueUsers,warnCount}:
+    avgDuration: 2045
+    errorCount: 2
+    p50Duration: 123
+    p95Duration: 5234
+    p99Duration: 30001
+    successRate: 85
+    topEndpoints[3]: /api/v1/users,/api/v1/orders,/api/v1/search
+    totalRequests: 20
+    uniqueIPs: 16
+    uniqueUsers: 12
+    warnCount: 2
+  region: us-west-2
+  service: api-gateway-prod
+  timeRange: "2025-11-04 12:00:00 - 12:15:00 UTC"

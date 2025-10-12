@@ -1,0 +1,73 @@
+﻿{
+  "socialFeed": {
+    "feedType": "timeline",
+    "userId": "user_main_123",
+    "fetchedAt": "2025-11-04T10:00:00Z",
+    "hasMore": true,
+    "nextCursor": "cursor_abc123xyz",
+    "posts": [
+      {
+        "postId": "post_67890",
+        "type": "original",
+        "author": {
+          "userId": "user_456",
+          "username": "tech_enthusiast_2025",
+          "displayName": "Tech Enthusiast",
+          "profileImage": "https://cdn.example.com/avatars/user_456.jpg",
+          "verified": true,
+          "followerCount": 12345,
+          "followingCount": 892,
+          "bio": "Technology enthusiast | Developer | Open Source contributor"
+        },
+        "content": {
+          "text": "Just discovered CanL3 - an amazing token-optimized format for LLM applications! 38% smaller than JSON. Perfect for reducing API costs. Check it out! #CanL3 #LLM #AI #CostOptimization",
+          "language": "en",
+          "hashtags": ["CanL3", "LLM", "AI", "CostOptimization"],
+          "mentions": ["@CanL3_official"],
+          "urls": ["https://CanL3.dev", "https://github.com/CanL3-dev/CanL3"]
+        },
+        "media": [],
+        "timestamp": "2025-11-04T09:30:00Z",
+        "metrics": {
+          "views": 5678,
+          "likes": 234,
+          "retweets": 45,
+          "replies": 12,
+          "bookmarks": 67,
+          "shares": 23,
+          "engagementRate": 6.7
+        },
+        "visibility": "public",
+        "allowReplies": true,
+        "isPinned": false
+      },
+      {
+        "postId": "post_67891",
+        "type": "retweet",
+        "originalAuthor": {
+          "userId": "user_101",
+          "username": "data_science_pro",
+          "displayName": "Data Science Professional",
+          "verified": true
+        },
+        "retweetedBy": {
+          "userId": "user_202",
+          "username": "ml_researcher",
+          "displayName": "ML Researcher"
+        },
+        "content": {
+          "text": "Working with massive datasets? CanL3's streaming API processes multi-GB files with constant memory usage. Game changer for data pipelines! ðŸš€",
+          "hashtags": ["DataScience", "BigData", "CanL3", "Streaming"]
+        },
+        "timestamp": "2025-11-04T08:45:00Z",
+        "metrics": {
+          "views": 2345,
+          "likes": 89,
+          "retweets": 12,
+          "replies": 5
+        }
+      }
+    ]
+  }
+}
+

@@ -1,0 +1,33 @@
+{
+  "company": "TechCorp International",
+  "department": "Engineering",
+  "employees": [
+    {"id": 1001, "name": "Sarah Connor", "title": "Engineering Manager", "dept": "Engineering", "salary": 145000, "experience": 12, "skills": ["leadership", "architecture", "mentoring"], "location": "San Francisco", "manager": null, "hired": "2013-01-15", "email": "sarah.connor@techcorp.com"},
+    {"id": 1002, "name": "Kyle Reese", "title": "Senior Engineer", "dept": "Engineering", "salary": 135000, "experience": 8, "skills": ["backend", "databases", "kubernetes"], "location": "San Francisco", "manager": 1001, "hired": "2017-03-20", "email": "kyle.reese@techcorp.com"},
+    {"id": 1003, "name": "John Connor", "title": "Staff Engineer", "dept": "Engineering", "salary": 165000, "experience": 10, "skills": ["distributed-systems", "scalability", "golang"], "location": "Remote", "manager": 1001, "hired": "2015-06-10", "email": "john.connor@techcorp.com"},
+    {"id": 1004, "name": "Miles Dyson", "title": "Principal Engineer", "dept": "Research", "salary": 185000, "experience": 15, "skills": ["ml", "ai", "research"], "location": "Palo Alto", "manager": null, "hired": "2010-09-01", "email": "miles.dyson@techcorp.com"},
+    {"id": 1005, "name": "Lisa Martinez", "title": "Senior Engineer", "dept": "Engineering", "salary": 140000, "experience": 9, "skills": ["frontend", "react", "typescript"], "location": "Austin", "manager": 1001, "hired": "2016-04-12", "email": "lisa.martinez@techcorp.com"},
+    {"id": 1006, "name": "David Chen", "title": "Engineer II", "dept": "Engineering", "salary": 120000, "experience": 5, "skills": ["python", "api-design", "testing"], "location": "San Francisco", "manager": 1002, "hired": "2020-01-08", "email": "david.chen@techcorp.com"},
+    {"id": 1007, "name": "Emma Wilson", "title": "Senior Engineer", "dept": "Platform", "salary": 138000, "experience": 7, "skills": ["devops", "ci-cd", "monitoring"], "location": "Seattle", "manager": 1003, "hired": "2018-07-22", "email": "emma.wilson@techcorp.com"},
+    {"id": 1008, "name": "Michael Brown", "title": "Engineer II", "dept": "Engineering", "salary": 115000, "experience": 4, "skills": ["java", "spring", "microservices"], "location": "Boston", "manager": 1002, "hired": "2021-02-15", "email": "michael.brown@techcorp.com"},
+    {"id": 1009, "name": "Sophia Taylor", "title": "Senior Engineer", "dept": "Data", "salary": 142000, "experience": 8, "skills": ["data-engineering", "spark", "airflow"], "location": "New York", "manager": 1004, "hired": "2017-11-30", "email": "sophia.taylor@techcorp.com"},
+    {"id": 1010, "name": "James Anderson", "title": "Staff Engineer", "dept": "Security", "salary": 160000, "experience": 11, "skills": ["security", "cryptography", "compliance"], "location": "Remote", "manager": null, "hired": "2014-05-18", "email": "james.anderson@techcorp.com"},
+    {"id": 1011, "name": "Olivia Garcia", "title": "Engineer III", "dept": "Engineering", "salary": 128000, "experience": 6, "skills": ["nodejs", "graphql", "postgres"], "location": "San Francisco", "manager": 1002, "hired": "2019-08-05", "email": "olivia.garcia@techcorp.com"},
+    {"id": 1012, "name": "William Lee", "title": "Senior Engineer", "dept": "Mobile", "salary": 136000, "experience": 7, "skills": ["ios", "swift", "mobile"], "location": "Los Angeles", "manager": 1005, "hired": "2018-03-14", "email": "william.lee@techcorp.com"},
+    {"id": 1013, "name": "Ava Rodriguez", "title": "Engineer II", "dept": "Engineering", "salary": 118000, "experience": 4, "skills": ["android", "kotlin", "jetpack"], "location": "Chicago", "manager": 1005, "hired": "2021-06-20", "email": "ava.rodriguez@techcorp.com"},
+    {"id": 1014, "name": "Daniel Kim", "title": "Senior Engineer", "dept": "Infrastructure", "salary": 141000, "experience": 9, "skills": ["aws", "terraform", "networking"], "location": "Seattle", "manager": 1007, "hired": "2016-10-11", "email": "daniel.kim@techcorp.com"},
+    {"id": 1015, "name": "Isabella Nguyen", "title": "Engineer III", "dept": "Engineering", "salary": 125000, "experience": 5, "skills": ["rust", "performance", "systems"], "location": "Remote", "manager": 1003, "hired": "2020-09-01", "email": "isabella.nguyen@techcorp.com"},
+    {"id": 1016, "name": "Matthew Patel", "title": "Senior Engineer", "dept": "Analytics", "salary": 139000, "experience": 8, "skills": ["bi", "sql", "tableau"], "location": "Austin", "manager": 1009, "hired": "2017-12-05", "email": "matthew.patel@techcorp.com"},
+    {"id": 1017, "name": "Charlotte Wong", "title": "Engineer II", "dept": "Engineering", "salary": 122000, "experience": 5, "skills": ["vue", "css", "design-systems"], "location": "San Francisco", "manager": 1005, "hired": "2020-04-17", "email": "charlotte.wong@techcorp.com"},
+    {"id": 1018, "name": "Ethan Singh", "title": "Staff Engineer", "dept": "Architecture", "salary": 168000, "experience": 12, "skills": ["architecture", "design", "leadership"], "location": "Palo Alto", "manager": null, "hired": "2013-08-22", "email": "ethan.singh@techcorp.com"},
+    {"id": 1019, "name": "Amelia Johnson", "title": "Senior Engineer", "dept": "Engineering", "salary": 137000, "experience": 7, "skills": ["machine-learning", "tensorflow", "python"], "location": "Remote", "manager": 1004, "hired": "2018-05-30", "email": "amelia.johnson@techcorp.com"},
+    {"id": 1020, "name": "Alexander Liu", "title": "Engineer III", "dept": "Engineering", "salary": 126000, "experience": 6, "skills": ["docker", "kubernetes", "helm"], "location": "Seattle", "manager": 1007, "hired": "2019-11-12", "email": "alexander.liu@techcorp.com"}
+  ],
+  "metadata": {
+    "totalEmployees": 20,
+    "avgSalary": 138450,
+    "departments": ["Engineering", "Research", "Platform", "Data", "Security", "Mobile", "Infrastructure", "Analytics", "Architecture"],
+    "locations": ["San Francisco", "Remote", "Palo Alto", "Austin", "Seattle", "Boston", "New York", "Los Angeles", "Chicago"],
+    "lastUpdated": "2025-11-04T12:00:00Z"
+  }
+}
